@@ -1,0 +1,6 @@
+site_name: matheuscruz.dev
+theme:
+  name: material
+plugins: 
+  - blog:
+      blog_dir: .
