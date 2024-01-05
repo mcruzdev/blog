@@ -1,14 +1,36 @@
 site_name: matheuscruz.dev
-
+repo_url: https://github.com/mcruzdev/blog
 theme:
+  palette: 
+
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
   features:
     - content.code.copy
+    - content.code.annotate
+    - navigation.indexes
   name: material
 plugins: 
   - search
   - info
   - blog:
+      draft_on_server: false
+      draft: false
       blog_dir: .
+      blog_toc: true
+      authors_profiles: true
+      authors_file: "{blog}/.authors.yml"
+      archive_toc: true
+
 markdown_extensions:
   - admonition
   - pymdownx.details

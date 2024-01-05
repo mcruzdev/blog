@@ -1,6 +1,8 @@
 ---
 draft: true 
 date: 2024-01-02
+authors:
+  - mcruzdev
 categories:
   - Java
   - Quarkus
@@ -41,3 +43,4 @@ Once Quarkus CLI is installed, let's utilize it:
 
 ```bash
 quarkus create extension dev.matheuscruz:quarkus-useful:0.0.1-SNAPSHOT
+```
