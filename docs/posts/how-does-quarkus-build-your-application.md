@@ -9,7 +9,7 @@ categories:
 
 ## TL;DR
 
-This post explores where Quarkus init the build process for your Quarkus application.
+This post explores how Quarkus init the build process for your Quarkus application.
 
 ## Quarkus concepts
 
@@ -20,15 +20,17 @@ This post explores where Quarkus init the build process for your Quarkus applica
 ### What is augmentation?
 
 
-In Quarkus, augmentation refers to a process where the framework optimizes and enhances your application during the build time:
+In Quarkus, augmentation refers to a process where the framework optimizes and enhances your application bytecode during the build time:
 
 ![augmentation](augmentation.png)
 
 ### Maven Plugin
 
-If you see in a Quarkus Application (`pom.xml` file) you will see the following configuration:
+What happens when you execute a `mvn clean package` command? Let's see below:
 
-```xml linenums="1" hl_lines="9"
+If you get the `pom.xml` file into your Quarkus Application, it is possible to get the following configuration:
+
+```xml hl_lines="9"
       <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId> <!-- (1) -->
@@ -49,7 +51,7 @@ If you see in a Quarkus Application (`pom.xml` file) you will see the following 
 1.  Quarkus Maven Plugin
 2.  Goal that calls the [`BuildMojo.java`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/BuildMojo.java#L35) class.
 
-The line `9` is the line that configures the Maven plugin to call the class [`BuildMojo.java`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/BuildMojo.java#L35):
+The line `9` is the line that configures the Maven plugin to call the goal [`build`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/BuildMojo.java#L35).
 
 ```java
 @Mojo(name = "build", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true)
@@ -62,7 +64,7 @@ The line `9` is the line that configures the Maven plugin to call the class [`Bu
 
 This class extends `QuarkusBootstrapMojo.java`. The abstract `QuarkusBootstrapMojo.java` class aims to facilitate code reuse and enable the use of the [Template Method Design Pattern](https://refactoring.guru/design-patterns/template-method) through [`beforeExecute()`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/QuarkusBootstrapMojo.java#L204) method.
 
-But the principal method of `BuildMojo.java` is the `doExecute()`, when does:
+But the principal method of `BuildMojo.java` is the `doExecute()`, let's take a look:
 
 1. `BuildMojo.java`'s principal method is `doExecute()`, which goes through the following steps:
     - Calls `QuarkusBootstrapMojo#bootstrapApplication()` to generate a `CuratedApplication` object.
@@ -79,12 +81,12 @@ But the principal method of `BuildMojo.java` is the `doExecute()`, when does:
     - `CuratedApplication#createAugmentor()`, creating an instance named `action` of type `AugmentAction`.
 
 3. Within `action`, it performs:
-    - Invokes augmentation via `AugmentResult`, storing the result of the augmentation process.
+    - Invokes augmentation via `AugmentationAction#createProductionApplication()`, creating a the result (`AugmentationResult` instance) of the augmentation process.
 
 4. Renaming the JAR file occurs under the condition:
     - If `result.getJar() != null` evaluates to `true`.
 
-## Inside the QuarkusMavenAppBootstrap class
+## Inside the QuarkusMavenAppBootstrap
 
 Between the steps **1** and **2** the method from class [`QuarkusBootstrapProvider.QuarkusMavenAppBootstrap#doBootstrap(QuarkusBootstrapMojo mojo, LaunchMode mode)`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/QuarkusBootstrapProvider.java#L205) is called, it is an important method too. Below, a snippet of this method is presented:
 
@@ -133,6 +135,26 @@ After, the method creates an instance of type `ConfiguredClassLoading` through a
 3. Check if is necessary to remove any resource from classpath (configured by `quarkus.class-loading.removed-resources` property).
 4. Finally creates a `CuratedApplication` instance with all necessary data to augmentation.
 
+
+## CuratedApplication
+
+The `CuratedApplication` class has the job to create a `QuarkusClassLoader` instance and creates an instance of `"io.quarkus.runner.bootstrap.AugmentActionImpl"`.
+
+The `AugmentActionImpl` represents a task that produces the application.
+
+## AugmentActionImpl
+
+The main method here is the `createProductionApplication()` that calls  `runAugment` method.
+
+Create a `QuarkusAugmentor` instance.
+
+## QuarkusAugmentor 
+
+The main method here is the `run()`, this methos is the resposile for logging the following message:
+
+```bash
+[INFO] [io.quarkus.deployment.QuarkusAugmentor] Quarkus augmentation completed in 1676ms
+```
 
 ## To be continued...
 
