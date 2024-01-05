@@ -1,5 +1,5 @@
 ---
-draft: false 
+draft: true 
 date: 2024-01-02
 authors: 
   - mcruzdev
@@ -53,7 +53,8 @@ If you get the `pom.xml` file into your Quarkus Application, it is possible to g
 1.  Quarkus Maven Plugin
 2.  Goal that calls the [`BuildMojo.java`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/BuildMojo.java#L35) class.
 
-The line `9` is the line that configures the Maven plugin to call the goal [`build`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/BuildMojo.java#L35).
+The line `9` is the line that configures via annotation the Maven plugin to map the [`build`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/BuildMojo.java#L35) goal.
+
 
 ```java
 @Mojo(name = "build", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true)
@@ -87,6 +88,9 @@ After, this introduction let's see inside the principal method of `BuildMojo.jav
 
 4. Renaming the JAR file occurs under the condition:
     - If `result.getJar() != null` evaluates to `true`.
+
+Basically, it is like a Facade that uses the most important Quakus class on build step.
+
 
 ## Inside the QuarkusMavenAppBootstrap
 
