@@ -17,15 +17,11 @@ theme:
   features:
     - content.code.copy
     - content.code.annotate
-    - navigation.indexes
   name: material
 plugins: 
   - search
-  - info
   - blog:
       blog_dir: .
-      authors_file: "{blog}/.authors.yml"
-      
 markdown_extensions:
   - admonition
   - pymdownx.details
