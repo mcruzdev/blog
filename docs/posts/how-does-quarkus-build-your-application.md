@@ -5,11 +5,11 @@ categories:
   - Java
   - Quarkus
 ---
-# How does the Quarkus build process work? 
+# How does the Quarkus build process work?  
 
 ## TL;DR
 
-This post explores the Quarkus build process for your Quarkus application.
+This post explores where Quarkus init the build process for your Quarkus application.
 
 ## Quarkus concepts
 
@@ -65,7 +65,15 @@ This class extends `QuarkusBootstrapMojo.java`. The abstract `QuarkusBootstrapMo
 But the principal method of `BuildMojo.java` is the `doExecute()`, when does:
 
 1. `BuildMojo.java`'s principal method is `doExecute()`, which goes through the following steps:
-    - Calls `super#bootstrapApplication()` to generate a `CuratedApplication` object.
+    - Calls `QuarkusBootstrapMojo#bootstrapApplication()` to generate a `CuratedApplication` object.
+    - The `LaunchMode` in [this case](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/QuarkusBootstrapMojo.java#L291) is `NORMAL`:
+      ```java
+        /**
+        * A normal production build. At the moment this can be both native image or
+        * JVM mode, but eventually these will likely be split
+        */
+        NORMAL("prod", "quarkus.profile")
+      ```
 
 2. The `CuratedApplication` object triggers:
     - `CuratedApplication#createAugmentor()`, creating an instance named `action` of type `AugmentAction`.
@@ -76,3 +84,56 @@ But the principal method of `BuildMojo.java` is the `doExecute()`, when does:
 4. Renaming the JAR file occurs under the condition:
     - If `result.getJar() != null` evaluates to `true`.
 
+## Inside the QuarkusMavenAppBootstrap class
+
+Between the steps **1** and **2** the method from class [`QuarkusBootstrapProvider.QuarkusMavenAppBootstrap#doBootstrap(QuarkusBootstrapMojo mojo, LaunchMode mode)`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/QuarkusBootstrapProvider.java#L205) is called, it is an important method too. Below, a snippet of this method is presented:
+
+```java linenums="239"
+QuarkusBootstrap.Builder builder = QuarkusBootstrap.builder()
+        .setAppArtifact(appModel.getAppArtifact())
+        .setExistingModel(appModel)
+        .setIsolateDeployment(true)
+        .setBaseClassLoader(getClass().getClassLoader())
+        .setBuildSystemProperties(getBuildSystemProperties(mojo, true))
+        .setProjectRoot(mojo.baseDir().toPath())
+        .setBaseName(mojo.finalName())
+        .setOriginalBaseName(mojo.mavenProject().getBuild().getFinalName())
+        .setTargetDirectory(mojo.buildDir().toPath())
+        .setForcedDependencies(forcedDependencies);
+
+try {
+    return builder.build().bootstrap();
+} catch (BootstrapException e) {
+    throw new MojoExecutionException("Failed to bootstrap the application", e);
+}
+```
+
+Starting from line 239, the code initiates the creation of the Builder for the class responsible for constructing the `QuarkusBootstrap` instance. This process aligns with the guidelines outlined in the [official documentation](https://pt.quarkus.io/guides/class-loading-reference#bootstrapping-quarkus).
+
+> All Quarkus applications are created by the `QuarkusBootstrap` class in the `independent-projects/bootstrap` module. This class is used to resolve all the relevant dependencies (both deployment and runtime) that are needed for the Quarkus application. The end result of this process is a `CuratedApplication`, which contains all the class loading information for the application.
+
+> The `CuratedApplication` can then be used to create an `AugmentAction` instance, which can create production application and start/restart runtime ones. This application instance exists within an isolated ClassLoader, it is not necessary to have any of the Quarkus deployment classes on the class path as the curate process will resolve them for you.
+
+Jumping directly to `QuarkusBootstrap#bootstrap()` [method](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/independent-projects/bootstrap/core/src/main/java/io/quarkus/bootstrap/app/QuarkusBootstrap.java#L128), let see what it does.
+
+An important comment at the beginning is:
+
+```java
+//all we want to do is resolve all our dependencies
+//once we have this it is up to augment to set up the class loader to actually use them
+```
+
+Basically, we can assume that if the `ApplicationModel` instance is null it triest to create a `CurationResult` with another way, using `BootstrapAppModelFactory#resolveAppModel()` to create a `CurationResult` containing the `ApplicationModel` solved.
+
+After, the method creates an instance of type `ConfiguredClassLoading` through a `builder` class. In the build method is possible to see that:
+
+1. Try to read `application.properties` and `System.getProperties()` to see if some `quarkus.class-loading.*` configuration exists (or `quarkus.test.flat-class-path` too).
+
+2. Populate parent first artifacts into `Set<ArtifactKey> firstFirstArtifacts;` property.
+3. Check if is necessary to remove any resource from classpath (configured by `quarkus.class-loading.removed-resources` property).
+4. Finally creates a `CuratedApplication` instance with all necessary data to augmentation.
+
+
+## To be continued...
+
+That concludes our initial peek into how Quarkus builds your application. Stay tuned for the next post Thank you for reading! 😊
