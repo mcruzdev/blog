@@ -17,12 +17,20 @@ theme:
   features:
     - content.code.copy
     - content.code.annotate
+    - navigation.indexes
   name: material
 plugins: 
   - search
   - info
   - blog:
+      draft_on_server: false
+      draft: false
       blog_dir: .
+      blog_toc: true
+      authors_profiles: true
+      authors_file: "{blog}/.authors.yml"
+      archive_toc: true
+
 markdown_extensions:
   - admonition
   - pymdownx.details

@@ -1,15 +1,18 @@
 ---
-draft: true 
+draft: false 
 date: 2024-01-02
+authors: 
+  - mcruzdev
 categories:
   - Java
   - Quarkus
+  - Maven
 ---
 # How does the Quarkus build process work?  
 
 ## TL;DR
 
-This post explores how Quarkus init the build process for your Quarkus application.
+This post explores how Quarkus build process works internally to build your Quarkus application.
 
 ## Quarkus concepts
 
@@ -18,7 +21,6 @@ This post explores how Quarkus init the build process for your Quarkus applicati
 ## Augmentation
 
 ### What is augmentation?
-
 
 In Quarkus, augmentation refers to a process where the framework optimizes and enhances your application bytecode during the build time:
 
@@ -62,9 +64,9 @@ The line `9` is the line that configures the Maven plugin to call the goal [`bui
 
 ## BuildMojo.java
 
-This class extends `QuarkusBootstrapMojo.java`. The abstract `QuarkusBootstrapMojo.java` class aims to facilitate code reuse and enable the use of the [Template Method Design Pattern](https://refactoring.guru/design-patterns/template-method) through [`beforeExecute()`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/QuarkusBootstrapMojo.java#L204) method.
+This class extends `QuarkusBootstrapMojo.java`. The abstract `QuarkusBootstrapMojo.java` class aims to facilitate code reuse and enable the use of the [Template Method Design Pattern](https://refactoring.guru/design-patterns/template-method) through [`beforeExecute()`](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/devtools/maven/src/main/java/io/quarkus/maven/QuarkusBootstrapMojo.java#L204) method. It is necessary because the others goals like `image-build` needs a another previous configuration before execute. 
 
-But the principal method of `BuildMojo.java` is the `doExecute()`, let's take a look:
+After, this introduction let's see inside the principal method of `BuildMojo.java`:
 
 1. `BuildMojo.java`'s principal method is `doExecute()`, which goes through the following steps:
     - Calls `QuarkusBootstrapMojo#bootstrapApplication()` to generate a `CuratedApplication` object.
@@ -117,13 +119,6 @@ Starting from line 239, the code initiates the creation of the Builder for the c
 > The `CuratedApplication` can then be used to create an `AugmentAction` instance, which can create production application and start/restart runtime ones. This application instance exists within an isolated ClassLoader, it is not necessary to have any of the Quarkus deployment classes on the class path as the curate process will resolve them for you.
 
 Jumping directly to `QuarkusBootstrap#bootstrap()` [method](https://github.com/quarkusio/quarkus/blob/e87a492ecbd83a20a23c8779b166f297136e686a/independent-projects/bootstrap/core/src/main/java/io/quarkus/bootstrap/app/QuarkusBootstrap.java#L128), let see what it does.
-
-An important comment at the beginning is:
-
-```java
-//all we want to do is resolve all our dependencies
-//once we have this it is up to augment to set up the class loader to actually use them
-```
 
 Basically, we can assume that if the `ApplicationModel` instance is null it triest to create a `CurationResult` with another way, using `BootstrapAppModelFactory#resolveAppModel()` to create a `CurationResult` containing the `ApplicationModel` solved.
 
