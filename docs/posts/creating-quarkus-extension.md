@@ -6,6 +6,7 @@ authors:
 categories:
   - Java
   - Quarkus
+  - Gizmo
 ---
 
 # Developing a Quarkus Extension
@@ -15,19 +16,21 @@ categories:
 This guide demonstrates how to create a Quarkus extension that provides three features that:
 
 - Notify an API regarding the application's running status
-- Offer a straightforward implementation with Gizmo
+- Offer a "straightforward" implementation with Gizmo
 - Provide support for the [Resend library](https://resend.com/docs/send-with-java#1-install) within Quarkus
 
 ## Quarkus CLI
 
-To start, let's set up the Quarkus CLI. This tool is incredibly useful for working with Quarkus.
+The Quarkus CLI is an incredibly useful tool for working with Quarkus.
 
 There are several ways to install the Quarkus CLI. [Refer to the official documentation for installation instructions](https://quarkus.io/guides/cli-tooling#installing-the-cli).
+
+With Quarkus CLI, we can `create`, `build`, `deploy`, and perform essential tasks in a developer's day-to-day workflow. We will use Quarkus CLI, be sure that is installed.
 
 ## What Will Our Extension Do?
 
 - Notify an API regarding the application's running status;
-- Offer a straightforward implementation with Gizmo;
+- Offer a "straightforward" implementation with Gizmo;
 - Provide a simple support for the [Resend library](https://resend.com/docs/send-with-java#1-install) within Quarkus;
 
 !!! info "Note"
@@ -36,7 +39,7 @@ There are several ways to install the Quarkus CLI. [Refer to the official docume
 
 ## Creating the Extension
 
-Once Quarkus CLI is installed, let's utilize it:
+Once the Quarkus CLI is installed, we will use it to create our useful extension.
 
 ```bash
 quarkus create extension dev.matheuscruz:quarkus-useful:0.0.1-SNAPSHOT
@@ -72,7 +75,7 @@ A Quarkus extension is divided in two modules, `deployment` and `runtime`.
 - The `deployment` module contains `@BuildSteps`, `*BuildItem`s and `*Processor`s components that are used at build time.
 
 
-- The `runtime` module contains runtime code that are used by `deployment` module. 
+- The `runtime` module contains runtime code that are used by `deployment` modul at build time. 
 
 **It might seem odd: why is runtime code executed and utilized by build-time code?**
 
@@ -82,7 +85,7 @@ A Quarkus extension is divided in two modules, `deployment` and `runtime`.
 
     A `deployment` module must depend on the `runtime` module.
 
-## Implementing the Notifier
+## [Feature #1] Implementing the Notifier
 
 **What do we need here, and what is the expected behavior?**
 
@@ -106,7 +109,6 @@ private static final String REST_ENDPOINT = "https://api.quarkus.com/apps"
 But, it is not a good practice. Quarkus aims to facilitate the creation of Cloud Native applications, and a good Cloud Native application uses (when necessary) [12 Factors - Configuration](https://12factor.net/config) approach.
 
 We need to make this configurable. I don't want to change the code and go through the entire release process (pull requests, approvals, pipelines, deployment, freezing, etc.) just to upload my extension with a new endpoint. To achieve this, Quarkus allows us to accomplish it using the [Configuration](https://quarkus.io/guides/config-reference) feature. You simply need to create a POJO class and annotate it with `@io.quarkus.runtime.annotations.ConfigRoot`. Let's proceed:
-
 
 
 ```java
@@ -156,6 +158,14 @@ Let's create the call to notify the 'starting' event.
 ```java linenums="1"
 package dev.matheuscruz.quarkus.useful.runtime;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
+
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,16 +178,32 @@ public class NotifyStartingEventRecorder {
     private static final Logger LOGGER = LoggerFactory.getLogger(NotifyStartingEventRecorder.class);
 
     public void notify(UsefulConfiguration config) {
-        config.listenerUrl.ifPresentOrElse((listenerUrl) -> {
+        if (config.listenerUrl.isEmpty()) {
+            LOGGER.warn(
+                    "You are using the 'quarkus-useful' extension but the configuration property quarkus.useful.listenerUrl not defined");
+            return;
+        }
+
+        try {
+
             String applicationName = ConfigProvider.getConfig()
                     .getConfigValue("quarkus.application.name")
                     .getValue();
 
-            LOGGER.info("Notifying {} service, for application: {}", config.listenerUrl.get(), applicationName);
-        }, () -> {
-            LOGGER.warn(
-                    "You are using the 'quarkus-useful' extension but the configuration property quarkus.useful.listenerUrl not defined");
-        });
+            String body = String.format("{ \"applicationName\": \"%s\" }", applicationName);
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(config.listenerUrl.get()))
+                    .POST(BodyPublishers.ofString(body))
+                    .build();
+
+            HttpClient httpClient = HttpClient.newHttpClient();
+
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, BodyHandlers.ofString());
+
+            LOGGER.info("The quarkus-useful-extension gets the HTTP status code: {}",
+                    httpResponse.statusCode());
+        } catch (IOException | InterruptedException e) {
+            LOGGER.error("It was not possible to notify the listenerUrl {}.", config.listenerUrl.get());
+        }   
     }
 }
 ```
@@ -186,12 +212,12 @@ public class NotifyStartingEventRecorder {
 
     The annotation `@Recorder` indicates that the given type is a recorder that is used to record actions to be executed at runtime.
 
-Perfectly, we have created our code that represents the code to be recorded. Let's create the build step that will record this piece of code.
+Perfectly, we have created our code that represents the code to be recorded. We will create now, the build step that will record this piece of code.
 
 
 ### Recording the `notify(UsefulConfiguration config)` method
 
-Let's create the class responsible for recording our code.
+Now, we will create the class responsible for recording our code.
 
 As mentioned previously all code related to the build process should be in `deployment` module. If you see into `deployment` module, there is a class called `QuarkusUsefulProcessor` (generated by Quarkus CLI):
 
@@ -285,7 +311,12 @@ The output should looks like:
 
 It happened because we forgot to set the `quarkus.useful.listenerUrl` property into `application.properties` file. Add the configuration property to `application.properties` and observe the result.
 
-## Implementing our GreetingService interface
+
+??? tip "Mocking HTTP request"
+
+        Use https://app.beeceptor.com/ this service to mock the HTTP request.
+    
+## [Feature #2] Implementing our GreetingService interface
 
 In some scenarios, offering a default implementation to our extension consumers becomes necessary, as seen in great libraries. 
 
@@ -345,7 +376,7 @@ void generateGreetingService(BuildProducer<GeneratedBeanBuildItem> generatedClas
 }
 ```
 
-!!! info "@Record is not necessary
+!!! info "@Record is not necessary"
 
     The `@Record` annotation isn't always mandatory. Sometimes, annotating the method solely with `@BuildStep` suffices to include it in the augmentation process. However, the `@Record` annotation becomes necessary when you intend to record a portion of runtime code.
 
@@ -460,3 +491,93 @@ quarkus dev
 Open the browser and access the [resource](http://localhost:8080/greetings).
 
 The output should shows: `Hello from Quarkus Useful extension`.
+
+## [Feature #3] Provide support for the Resend library
+
+The primary purpose of a Quarkus Extension is to seamlessly integrate an external library into the Quarkus ecosystem.
+
+In this section, we will offer support for the [Resend](https://resend.com/overview) library.
+
+We will add the `Resend` library into the `runtime` module.
+
+```xml
+<!-- runtime/pom.xml -->
+<dependency>
+    <groupId>com.resend</groupId>
+    <artifactId>resend-java</artifactId>
+    <version>2.2.1</version>
+</dependency>
+```
+
+### Creating the configuration for Resend
+
+The `com.resend.Resend` class contains a constructor that requires the API Key (`String`), which is sensitive data. As mentioned in the previous section, it is considered a best practice to make this configuration adjustable, particularly for its essential runtime usage in this scenario.
+
+```java linenums="1" hl_lines="9"
+package dev.matheuscruz.quarkus.useful.runtime;
+
+import java.util.Optional;
+
+import io.quarkus.runtime.annotations.ConfigItem;
+import io.quarkus.runtime.annotations.ConfigPhase;
+import io.quarkus.runtime.annotations.ConfigRoot;
+
+@ConfigRoot(name = "useful-resend", phase = ConfigPhase.RUN_TIME)
+public class ResendConfiguration {
+
+    /**
+     * The Resend API Key.
+     */
+    @ConfigItem(name = "apiKey")
+    Optional<String> apiKey;
+}
+```
+
+On line **"7"**, we set up a new configuration utilizing the `ConfigPhase.RUNTIME` phase, indicating that this configuration is visible during runtime.
+
+### Creating the default Bean in `runtime`
+
+This step is very simple, we just need to use the [CDI Specification](https://www.cdi-spec.org/) and produce a new configurable `com.resend.Resend` bean.
+
+
+```java linenums="1"
+package dev.matheuscruz.quarkus.useful.runtime;
+
+import com.resend.Resend;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Singleton;
+
+@ApplicationScoped
+public class ResendProducer {
+
+    @Produces
+    @Singleton
+    public Resend producesResend(ResendConfiguration config) {
+        if (config.apiKey.isEmpty()) {
+            throw new IllegalArgumentException("Resend apiKey cannot be empty");
+        }
+        return new Resend(config.apiKey.get());
+    }
+}
+```
+
+Now that we've produced a bean through our extension, let's use it into our `integration-tests` application.
+
+
+Add the new property into `integration-tests/src/main/resources/application.properties` file. It is required because we have a `throw new IllegalArgumentException("Resend apiKey cannot be empty");` in the line **"16"**.
+
+```properties
+quarkus.useful-resend.apiKey=api-key
+```
+
+Install the application:
+
+```bash
+mvn clean install
+```
+
+Inject and add the new `com.resend.Resend` bean into the controller and use it:
+
+
