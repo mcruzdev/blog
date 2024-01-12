@@ -7,6 +7,7 @@ categories:
   - Java
   - Quarkus
   - Gizmo
+  - Jandex
 ---
 
 # Developing a Quarkus Extension
