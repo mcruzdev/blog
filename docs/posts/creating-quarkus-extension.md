@@ -19,6 +19,7 @@ This guide demonstrates how to create a Quarkus extension that provides three fe
 - Offer a "straightforward" implementation with Gizmo
 - Provide support for the [Resend library](https://resend.com/docs/send-with-java#1-install) within Quarkus
 
+<!-- more -->
 ## Quarkus CLI
 
 The Quarkus CLI is an incredibly useful tool for working with Quarkus.

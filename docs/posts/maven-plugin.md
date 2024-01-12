@@ -2,7 +2,7 @@
 authors:
   - mcruzdev
 draft: true 
-date: 2023-12-29
+date: 2024-12-29
 categories:
   - Maven
   - Java
@@ -21,6 +21,7 @@ At times, we have an idea that doesn't exist yet, or it exists but is deprecated
 
 We currently have some Maven plugins. Another motivation for creating a Maven plugin is to delve deeper into a technology. One helpful approach is attempting to simplify the implementation of the same technology, thereby understanding its internal workings and challenges more comprehensively.
 
+<!-- more -->
 ## Getting Started
 
 Maven offers a set of tools that assist us in creating Maven plugins.
