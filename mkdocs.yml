@@ -2,8 +2,8 @@ site_name: matheuscruz.dev
 repo_url: https://github.com/mcruzdev/blog
 site_url: https://mcruzdev.github.io
 theme:
-  palette: 
-
+  name: material
+  palette:
     # Palette toggle for light mode
     - scheme: default
       toggle:
@@ -18,7 +18,7 @@ theme:
   features:
     - content.code.copy
     - content.code.annotate
-  name: material
+    - navigation.indexes
 plugins: 
   - search
   - social

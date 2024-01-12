@@ -25,7 +25,7 @@ This post explores how Quarkus build process works internally to build your Quar
 
 In Quarkus, augmentation refers to a process where the framework optimizes and enhances your application bytecode during the build time:
 
-![augmentation](augmentation.png)
+![augmentation](assets/augmentation.png)
 
 ### Maven Plugin
 

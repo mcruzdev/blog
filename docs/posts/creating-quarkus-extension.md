@@ -1,4 +1,6 @@
 ---
+social:
+  cards_layout: custom    
 draft: false 
 date: 2024-01-12
 authors:
