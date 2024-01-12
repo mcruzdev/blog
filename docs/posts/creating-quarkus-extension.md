@@ -178,24 +178,8 @@ As mentioned previously, all code that executes at runtime should be in the `run
 
 Let's create the call to notify the `starting` event.
 
-```java linenums="1" hl_lines="17 22 31"
-package dev.matheuscruz.quarkus.useful.runtime;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse.BodyHandlers;
-
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.quarkus.runtime.annotations.Recorder;
-
-@Recorder //(3)
+```java linenums="1" hl_lines="1 6 13"
+@Recorder // (3)
 public class NotifyStartingEventRecorder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotifyStartingEventRecorder.class);
@@ -207,26 +191,23 @@ public class NotifyStartingEventRecorder {
             return;
         }
 
-        try {
+        String applicationName = ConfigProvider.getConfig() // (2)
+                .getConfigValue("quarkus.application.name")
+                .getValue();
 
-            String applicationName = ConfigProvider.getConfig() // (2)
-                    .getConfigValue("quarkus.application.name")
-                    .getValue();
+        String body = String.format("{ \"applicationName\": \"%s\" }", applicationName);
+        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(config.listenerUrl.get()))
+                .POST(BodyPublishers.ofString(body))
+                .build();
 
-            String body = String.format("{ \"applicationName\": \"%s\" }", applicationName);
-            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(config.listenerUrl.get()))
-                    .POST(BodyPublishers.ofString(body))
-                    .build();
+        HttpClient httpClient = HttpClient.newHttpClient();
 
-            HttpClient httpClient = HttpClient.newHttpClient();
+        CompletableFuture<HttpResponse<String>> httpResponse = httpClient.sendAsync(httpRequest,
+                BodyHandlers.ofString());
 
-            HttpResponse<String> httpResponse = httpClient.send(httpRequest, BodyHandlers.ofString());
-
-            LOGGER.info("The quarkus-useful-extension gets the HTTP status code: {}",
-                    httpResponse.statusCode());
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error("It was not possible to notify the listenerUrl {}.", config.listenerUrl.get());
-        }   
+        httpResponse.thenAccept(t -> {
+            LOGGER.info("The quarkus-useful-extension gets the HTTP status code: {}", t.statusCode());
+        });
     }
 }
 ```
@@ -358,11 +339,10 @@ It happened because we forgot to set the `quarkus.useful.listenerUrl` property i
 Now, that we have configured the `quarkus.useful.listenerUrl`, the output should looks like it: 
 
 ```sh
-2024-01-12 14:23:26,817 INFO  [dev.mat.qua.use.run.NotifyStartingEventRecorder] (Quarkus Main Thread) The quarkus-useful-extension gets the HTTP status code: 200
-
-2024-01-12 14:23:27,009 INFO  [io.quarkus] (Quarkus Main Thread) quarkus-useful-integration-tests 0.0.1-SNAPSHOT on JVM (powered by Quarkus 3.6.4) started in 3.753s. Listening on: http://localhost:8080
-2024-01-12 14:23:27,012 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2024-01-12 14:23:27,012 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, quarkus-useful, resteasy, smallrye-context-propagation, vertx]
+2024-01-12 20:44:00,303 INFO  [io.quarkus] (main) quarkus-useful-integration-tests 0.0.1-SNAPSHOT on JVM (powered by Quarkus 3.6.5) started in 0.980s. Listening on: http://0.0.0.0:8080
+2024-01-12 20:44:00,304 INFO  [io.quarkus] (main) Profile prod activated. 
+2024-01-12 20:44:00,304 INFO  [io.quarkus] (main) Installed features: [cdi, quarkus-useful, resteasy, smallrye-context-propagation, vertx]
+2024-01-12 20:44:01,107 INFO  [dev.mat.qua.use.run.NotifyStartingEventRecorder] (ForkJoinPool.commonPool-worker-1) The quarkus-useful-extension gets the HTTP status code: 200
 ```
 ## [Feature #2] Implementing our GreetingService interface
 
