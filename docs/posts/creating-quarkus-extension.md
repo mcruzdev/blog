@@ -580,4 +580,97 @@ mvn clean install
 
 Inject and add the new `com.resend.Resend` bean into the controller and use it:
 
+```java linenums="1"
+package dev.matheuscruz.quarkus.useful.it;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.SendEmailRequest;
+import com.resend.services.emails.model.SendEmailResponse;
+
+import dev.matheuscruz.quarkus.useful.runtime.GreetingService;
+
+@Path("/quarkus-useful")
+@ApplicationScoped
+public class QuarkusUsefulResource {
+    // add some rest methods here
+
+    @Inject
+    GreetingService greetingService;
+
+    @Inject
+    Resend resend;
+
+    @GET
+    public String hello() {
+        return "Hello quarkus-useful";
+    }
+
+    @POST
+    @Path("/emails")
+    public String email() throws ResendException {
+        SendEmailResponse send = resend.emails().send(
+                SendEmailRequest.builder()
+                        .addTo("email@gmail.com") // use from application.properties
+                        .html("Hello from Quarkus Club")
+                        .build());
+        return send.toString();
+    }
+}
+```
+
+If we run the application...
+
+```bash
+java.lang.RuntimeException: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
+        [error]: Build step io.quarkus.arc.deployment.ArcProcessor#validate threw an exception: jakarta.enterprise.inject.spi.DeploymentException: jakarta.enterprise.inject.UnsatisfiedResolutionException: Unsatisfied dependency for type com.resend.Resend and qualifiers [@Default]
+```
+
+Is occurs because we want to in build time add the dependency to the Quarkus closed world. To do it, we need to create a new build step adding the `ResendProducer` class into the Quarkus closed world.
+
+### Adding the ResendProducer into the Quarkus closed world
+
+Into the class `QuarkusUsefulProcessor` class we will add a new build step:
+
+
+```java
+@BuildStep
+AdditionalBeanBuildItem addAdditionalBean() {
+    return AdditionalBeanBuildItem.unremovableOf(ResendProducer.class);
+}
+```
+
+The build item `AdditionalBeanBuildItem` aims to:
+
+> ... specify one or more additional bean classes to be analyzed during bean discovery.
+
+The `unremovableOf` tell to the ArC to not remove the bean if not the bean is not used. By default the resulting beans may be removed if they are considered unused.
+
+We will, install the extension again and to execute the application.
+
+```bash
+mvn clean install
+
+cd integration-tests
+
+quarkus dev
+```
+
+To be more simple to test the endpoint, let's add the `quarkus-smallrye-openapi` extension to `integration-tests`.
+
+```xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-smallrye-openapi</artifactId>
+</dependency>
+```
+
+Try out the `/quarkus-useful/emails` endpoint using Swagger UI and see your email inbox.
+
+Thank you!
