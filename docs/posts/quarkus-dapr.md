@@ -2,7 +2,7 @@
 authors:
   - mcruzdev
 draft: true 
-date: 2023-12-29
+date: 2024-12-29
 categories:
   - Quarkus
   - Dapr
@@ -16,5 +16,6 @@ In this post you will understand what Dapr is and how to use the Publish and sub
 
 ## What is Dapr?
 
+<!-- more -->
 
 

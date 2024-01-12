@@ -20,7 +20,10 @@ theme:
   name: material
 plugins: 
   - search
+  - social
   - blog:
+      post_excerpt: required
+      blog_toc: true
       blog_dir: .
 markdown_extensions:
   - admonition

@@ -18,6 +18,7 @@ This post explores how Quarkus build process works internally to build your Quar
 
 **Quarkus** is both a framework and a build-time **augmentation** toolkit. Applications built with Quarkus boast exceptionally fast startup times and a minimal footprint, thanks of its augmentation process.
 
+<!-- more -->
 ## Augmentation
 
 ### What is augmentation?
