@@ -648,10 +648,10 @@ This provides a concise overview of the Quarkus extension. For in-depth informat
 - [Quarkus Insights #52: Gizmo: Build-time Boost Your Extensions - Martin Kouba](https://www.youtube.com/watch?v=iZ501bG2ZAE)
 
 
-### Source code
+## Source code
 
 If you'd like to view the entire code, you can access it [here](https://github.com/mcruzdev/quarkus-useful).
 
-### Thank you
+## Thank you
 
 That's all; thank you for reading! See you in the next post. Goodbye! :wave:

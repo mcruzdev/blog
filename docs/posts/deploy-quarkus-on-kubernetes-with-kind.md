@@ -361,3 +361,9 @@ Nice! We have a Quarkus application running into Kubernetes! :clap::clap::clap: 
 
 
 ## Source code 
+
+If you'd like to view the entire code, you can access it [here](https://github.com/mcruzdev/quarkus-k8s).
+
+## Thank you
+
+That's all; thank you for reading! See you in the next post. Goodbye! :wave:
