@@ -649,7 +649,7 @@ This provides a concise overview of the Quarkus extension. For in-depth informat
 
 ### Source code
 
-If you'd like to view the entire code, you can access it [here](https://github.com/mcruzdev/quarkus-useful-extension/tree/final).
+If you'd like to view the entire code, you can access it [here](https://github.com/mcruzdev/quarkus-useful).
 
 ### Thank you
 
