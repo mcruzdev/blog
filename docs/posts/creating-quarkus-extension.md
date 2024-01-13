@@ -1,8 +1,5 @@
 ---
-social:
-  cards_layout_options:
-    background_color: blue # Change background color
-    background_image: null # Remove background image
+title: Developing a Quarkus Extension
 draft: false 
 date: 2024-01-12
 authors:
