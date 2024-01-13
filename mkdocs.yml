@@ -3,15 +3,19 @@ repo_url: https://github.com/mcruzdev/blog/
 site_url: https://mcruzdev.github.io/blog/
 theme:
   name: material
-  favicon: material/keyboard
+  favicon: me.jpeg
   icon:
     logo: material/keyboard
   palette:
     - scheme: default
+      primary: indigo
+      accent: indigo
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
     - scheme: slate
+      primary: black
+      accent: indigo
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to light mode
