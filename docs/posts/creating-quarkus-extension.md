@@ -15,7 +15,7 @@ categories:
 
 ## TL;DR
 
-This post demonstrates how to create a Quarkus extension that provides two features that:
+This post demonstrates how to create a Quarkus extension that provides three features that:
 
 - Notify an API regarding the application's `starting` status;
 - Offer a implementation class created with [Gizmo](https://github.com/quarkusio/gizmo);
