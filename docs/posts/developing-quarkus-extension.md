@@ -32,7 +32,7 @@ Additionally, Quarkus is a framework that has been captivating developers with i
 
 Keeping in mind these initial concepts, let's try to answer some questions:
 
-- Some libraries perform actions at runtime (class path scanning, proxies, etc.) instead of build time. How can we modify them to the Quarkus closed world?
+- Some libraries perform actions at runtime (class path scanning, proxies, etc.) instead of build time. How can we adapt them to the Quarkus closed world?
 
 - Quarkus leverages the Graal SDK to generate a native application. However, it's essential to note that [Graal VM does need some tweaks](https://pt.quarkus.io/guides/writing-native-applications-tips), and all executable code needs to be known before running. How can I adjust the code to be used as correct input for GraalVM?
 
