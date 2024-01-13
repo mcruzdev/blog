@@ -34,9 +34,9 @@ Keeping in mind these initial concepts, let's try to answer some questions:
 
 - Some libraries perform actions at runtime (class path scanning, proxies, etc.) instead of build time. How can we modify them to the Quarkus closed world?
 
-- Quarkus leverages the Graal SDK to generate a native application. However, it's essential to note that [Graal VM does need some tweaks](https://pt.quarkus.io/guides/writing-native-applications-tips), and the executable code needs to be known before running. How can I adjust the code to be used as correct input for GraalVM?
+- Quarkus leverages the Graal SDK to generate a native application. However, it's essential to note that [Graal VM does need some tweaks](https://pt.quarkus.io/guides/writing-native-applications-tips), and all executable code needs to be known before running. How can I adjust the code to be used as correct input for GraalVM?
 
-- Managing an Internal Developer Platform with over 100 Quarkus applications in production, I need to implement a specific cross-cutting approach across all applications. What is the recommended method to achieve this?
+- Managing an Internal Developer Platform with over 100+ Quarkus applications in production, I need to implement a specific cross-cutting approach across all applications. What is the recommended method to achieve this?
 
 Commonly, the answer for all questions (when you are using Quarkus) is: **Create a Quarkus extension**.
 
@@ -51,9 +51,9 @@ There are several ways to install the Quarkus CLI.
 
     [Refer to the official documentation for installation instructions](https://quarkus.io/guides/cli-tooling#installing-the-cli).
 
-With Quarkus CLI, we can `create`, `build`, `deploy`, and perform essential tasks in a developer's day-to-day workflow. 
+With Quarkus CLI, we can `create`, `build`, `deploy` applications and perform essential tasks in a developer's day-to-day workflow. Be sure that you have it installed.
 
-## What Will Our Extension Do?
+## What will our extension do?
 
 - Notify an API regarding the application's `starting` status;
 - Offer a simple implementation class with [Gizmo](https://github.com/quarkusio/gizmo);
@@ -63,7 +63,7 @@ With Quarkus CLI, we can `create`, `build`, `deploy`, and perform essential task
   
     All features are simple compared to real-world applications, but they serve as a great starting point to grasp and initiate your journey into the world of Quarkus extensions!
 
-## Creating the Extension
+## Creating the extension
 
 Once the Quarkus CLI is installed, we will use it to create our useful extension.
 
@@ -94,7 +94,13 @@ applying codestarts...
 Navigate into this directory and get started: quarkus build
 ```
 
-## Quarkus Extension structure
+We are using the `standalone` layout, if you want to use the [Quarkiverse](https://github.com/quarkiverse) layout execute the following command.
+
+```sh
+quarkus create extension io.quarkiverse:quarkus-useful:0.0.1-SNAPSHOT
+``` 
+
+## Quarkus extension structure
 
 A Quarkus extension is divided in two modules, `deployment` and `runtime`.
 
@@ -127,7 +133,7 @@ To call a REST service, you'll require the resource's URI. How can you retrieve 
 
 We can do it into the code:
 
-```java
+```java linenums="1"
 private static final String REST_ENDPOINT = "https://api.quarkus.com/apps"
 ```
 
@@ -173,7 +179,7 @@ public class UsefulConfiguration {
 
 Perfect, now that we have the configuration available, let's use it.
 
-### Calling the HTTP Service
+### Calling the HTTP service
 
 As mentioned previously, all code that executes at runtime should be in the `runtime` module.
 
@@ -250,7 +256,7 @@ The `FeatureBuildItem` is used to include the feature (`quarkus-useful`) to be p
 ```sh 
 Installed features: [cdi, quarkus-useful, resteasy, smallrye-context-propagation, vertx]
 ```
-### Build Steps and Build Items
+### Build steps and build items
 
 ![build-steps-and-build-items](assets/build-steps-and-build-items.png)
 
@@ -286,7 +292,7 @@ The `ExecutionTime` enum has two options: `RUNTIME_INIT` and `STATIC_INIT`.
 
 Let's dive into some simple code examples to understand how these choices impact bytecode.
 
-```java
+```java linenums="1"
 public class GeneratedBytecode {
 
   static {
@@ -361,7 +367,7 @@ public interface GreetingService {
 
 The user's code:
 
-```java
+```java linenums="1"
 @Path("/greetings")
 public class GreetingResource {
 
@@ -391,7 +397,7 @@ There are several ways to achieve this with Quarkus. One approach is implementin
 
 Into the `runtime` module, let's create our interface:
 
-```java
+```java linenums="1"
 package dev.matheuscruz.quarkus.useful.runtime;
 
 public interface GreetingService {
@@ -411,7 +417,7 @@ void generateGreetingService(BuildProducer<GeneratedBeanBuildItem> generatedClas
 
 !!! info "@Record is not necessary"
 
-    The `@Record` annotation isn't always mandatory. Sometimes, annotating the method solely with `@BuildStep` suffices to include it in the augmentation process. However, the `@Record` annotation becomes necessary when you intend to record a portion of runtime code.
+    The `@Record` annotation isn't always mandatory. Sometimes, annotating the method solely with `@BuildStep` suffices to include it in the augmentation process. However, if you have the `@Record` annotation you need to have a `@Recorder` class injected in the method.
 
 There are two ways to generate a Build Item, the first one is returning the Build Item in method, and the second one is using the class `BuildProducer<T extends BuildItem>`.
 
@@ -456,7 +462,7 @@ What this build step does ind depth? Let's see:
 
 ??? info "See more: ClassCreator#close() implementation"
 
-    ```java
+    ```java linenums="1"
     public void close() {
         final ClassOutput classOutput = this.classOutput;
         if (classOutput != null) {
@@ -468,7 +474,7 @@ What this build step does ind depth? Let's see:
 
 ??? info "See more: GeneratedBeanGizmoAdaptor#write() implementation"
 
-    ```java
+    ```java linenums="1"
         @Override
     public void write(String className, byte[] bytes) {
         String source = null;
@@ -555,7 +561,7 @@ public class ConsoleRecorder {
 
 ### Creating the deployment code
 
-Quarkus offers two build items (`ApplicationIndexBuildItem`, `CombinedIndexBuildItem`) that enable us to obtain an index for accessing annotations, implementations, interfaces, and more.
+Quarkus offers two build items (`ApplicationIndexBuildItem`, `CombinedIndexBuildItem`) that enable us to obtain an index for accessing annotations, implementations, interfaces, and more. In the `ApplicationIndexBuildItem` we have all application classes and in the `CombinedIndexBuildItem` we have all the application classes and all relevant classes from dependencies, etc.
 
 ```java linenums="1" hl_lines="1-4 7 8 13 21"
 private static final DotName POST_DOT_NAME = DotName.createSimple("jakarta.ws.rs.POST");
@@ -593,7 +599,7 @@ void countJaxRs(ApplicationIndexBuildItem jandex, ConsoleRecorder consoleRecorde
 
 Let's add a new method inside the `QuarkusUsefulResource`:
 
-```java
+```java linenums="1"
 @POST
 public void log() {
     return "log was called";
@@ -629,7 +635,7 @@ The log should looks like it:
 2024-01-12 20:08:28,985 INFO  [dev.mat.qua.use.run.ConsoleRecorder] (Quarkus Main Thread) Your application has 0 method(s) annotated with jakarta.ws.rs.DELETE
 ```
 
-### References
+### References and resources
 
 This provides a concise overview of the Quarkus extension. For in-depth information, refer to the comprehensive official resources dedicated to this subject:
 
