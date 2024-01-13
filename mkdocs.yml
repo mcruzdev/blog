@@ -47,6 +47,8 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 extra:
+  annotate:
+    properties: [//]
   social:
     - icon: fontawesome/brands/github-alt
       link: https://github.com/mcruzdev

@@ -2,10 +2,12 @@
 authors:
   - mcruzdev
 draft: true 
-date: 2024-12-29
+date: 2023-12-29
 categories:
   - Quarkus
   - Dapr
+  - Java
+  - Redis
 ---
 
 # Using Dapr Pub/Sub with Quarkus Application
