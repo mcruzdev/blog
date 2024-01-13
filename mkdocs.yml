@@ -1,6 +1,6 @@
 site_name: matheuscruz.dev
 repo_url: https://github.com/mcruzdev/blog
-site_url: https://mcruzdev.github.io/
+site_url: https://mcruzdev.github.io/blog/
 theme:
   name: material
   icon:
