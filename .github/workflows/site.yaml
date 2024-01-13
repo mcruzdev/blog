@@ -28,3 +28,10 @@ jobs:
       - run: pip install mkdocs-material
       - run: pip install "mkdocs-material[imaging]"
       - run: mkdocs gh-deploy --force
+      - uses: shallwefootball/s3-upload-action@master
+        with:
+          aws_key_id: "${{ secrets.AWS_ACCESS_KEY }}"
+          aws_secret_access_key: "${{ secrets.AWS_SECRET_KEY }}"
+          aws_bucket: "${{ secrets.AWS_BUCKET }}"
+          source_dir: site
+          destination_dir: ""
