@@ -1,6 +1,8 @@
 ---
 social:
-  cards: true  
+  cards_layout_options:
+    background_color: blue # Change background color
+    background_image: null # Remove background image
 draft: false 
 date: 2024-01-12
 authors:

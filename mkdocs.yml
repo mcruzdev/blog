@@ -1,16 +1,15 @@
 site_name: matheuscruz.dev
-repo_url: https://github.com/mcruzdev/blog/
-site_url: https://mcruzdev.github.io
+repo_url: https://github.com/mcruzdev/blog
+site_url: https://mcruzdev.github.io/
 theme:
   name: material
+  icon:
+    logo: material/keyboard
   palette:
-    # Palette toggle for light mode
     - scheme: default
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
-
-    # Palette toggle for dark mode
     - scheme: slate
       toggle:
         icon: material/toggle-switch-off-outline
@@ -21,7 +20,8 @@ theme:
     - navigation.indexes
 plugins: 
   - search
-  - social
+  - social:
+      cards_layout: default/accent
   - blog:
       post_excerpt: required
       blog_toc: true
