@@ -21,7 +21,8 @@ theme:
     - navigation.indexes
 plugins: 
   - search
-  - social
+  - social:
+      cache: false
   - blog:
       post_excerpt: required
       blog_toc: true
