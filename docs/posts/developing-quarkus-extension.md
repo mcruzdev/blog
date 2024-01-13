@@ -639,6 +639,7 @@ The log should looks like it:
 
 This provides a concise overview of the Quarkus extension. For in-depth information, refer to the comprehensive official resources dedicated to this subject:
 
+- [Quarkus in Action](https://www.manning.com/books/quarkus-in-action)
 - [Writing Extensions](https://quarkus.io/guides/writing-extensions)
 - [Building My First Extension](https://quarkus.io/guides/building-my-first-extension)
 - [Writing Native Applications Tips](https://quarkus.io/guides/writing-native-applications-tips)
