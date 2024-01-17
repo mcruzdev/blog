@@ -1,14 +1,16 @@
 ---
 title: Deploying a Quarkus application on Kubernetes
-draft: true 
-date: 2024-01-13
+draft: false 
+date: 2024-01-17
 authors:
   - mcruzdev
 categories:
   - Java
   - Quarkus
   - Jaeger
-  - Kubernetes KinD
+  - KinD
+  - Kubernetes
+  - Docker
 ---
 
 ## TL;DR
