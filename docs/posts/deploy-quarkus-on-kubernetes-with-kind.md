@@ -29,7 +29,8 @@ Usually, when people hear about Quarkus, they often think it's just a tool that 
 
 <!-- more -->
 
-If you work with Kubernetes and need to manually write Kubernetes resources (Deployment, Service, etc.) for each application, I would recommend using a tool like Helm, for instance. Now, if you want even more convenience without worrying about templates, etc., I would like to introduce you to the Quarkus Kubernetes extension.
+If you work with Kubernetes, managing multiple applications, and find yourself manually writing Kubernetes resources (such as Deployment, Service, ConfigMap, etc.) for each application, I would recommend using a tool like [Helm](https://helm.sh/), for instance. Now, if you are using Quarkus and desire even more convenience and a simpler way (with minimal manifest customization) without the need to worry about templates, etc., let me introduce you to the Quarkus Kubernetes ext
+
 
 ## Kubernetes Extension
 
@@ -37,6 +38,10 @@ The Kubernetes extension generates Kubernetes resources based on configurations.
 
 It is possible to generate resources for OpenShift, vanilla Kubernetes, and Knative. You can create and customize `RBAC` resources, Ingress Controllers, Services, Deployments, etc. For more information, refer to the [official documentation](https://quarkus.io/guides/deploying-to-kubernetes).
 
+
+!!! tip "GitOps"
+
+    This is a valuable feature for the GitOps approach. The Quarkus build can generate all the required resources, allowing configuration through environment variables (overriding `application.properties` values). These generated resources serve as input for GitOps tooling.
 
 ## Creating the Kubernetes cluster
 
@@ -346,9 +351,26 @@ Quarkus offers the possibility to push the image to a container registry using t
 ```properties
 quarkus.container-image.username=myusername
 quarkus.container-image.password=mypassword
+quarkus.container-image.registry=docker.io # used by default
 ```
 
 I will use the docker push command to upload the container image to the Docker Registry. The command is `docker push <docker-user>/quarkus-k8s:1.0`.
+
+??? tip "Pushing to registry during build"
+
+    If you want to push the image during build, you can use the following configurations:
+
+    ```properties
+    quarkus.container-image.username=myusername
+    quarkus.container-image.password=mypassword
+    quarkus.container-image.registry=docker.io # used by default
+    ```
+
+    Execute the build command:
+
+    ```sh
+    quarkus build -Dquarkus.container-image.push=true
+    ```
 
 Now, if we execute the `quarkus deploy` command and access this [endpoint](http://localhost/hello)... You will get this:
 
@@ -359,6 +381,10 @@ Hello from RESTEasy Reactive
 
 Nice! We have a Quarkus application running into Kubernetes! :clap::clap::clap: without to worry about Kubernetes manifests.
 
+## References and resources
+
+- [Deploying to Kubernetes](https://quarkus.io/guides/deploying-to-kubernetes)
+- [Container Images](https://pt.quarkus.io/guides/container-image)
 
 ## Source code 
 
