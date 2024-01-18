@@ -51,6 +51,11 @@ We will create a Kubernetes cluster with Kubernetes in Docker (KinD). As the nam
 
 Our Kubernetes cluster will have **1 control plane** and **1 worker node**!
 
+??? info "Installing KinD"
+
+    See here: [How to install KinD with a package manager](https://kind.sigs.k8s.io/docs/user/quick-start/#installing-with-a-package-manager)
+
+    
 ```sh linenums="1" hl_lines="6-11"
 cat <<EOF | kind create cluster --name dev --config=-
 kind: Cluster
