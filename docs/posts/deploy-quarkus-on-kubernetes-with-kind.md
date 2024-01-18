@@ -31,7 +31,7 @@ Usually, when people hear about Quarkus, they often think it's just a tool that 
 
 <!-- more -->
 
-If you work with Kubernetes, managing multiple applications, and find yourself manually writing Kubernetes resources (such as Deployment, Service, ConfigMap, etc.) for each application, I would recommend using a tool like [Helm](https://helm.sh/), for instance. Now, if you are using Quarkus and desire even more convenience and a simpler way (with minimal manifest customization) without the need to worry about templates, etc., let me introduce you to the Quarkus Kubernetes ext
+If you work with Kubernetes, managing multiple applications, and find yourself manually writing Kubernetes resources (such as Deployment, Service, ConfigMap, etc.) for each application, I would recommend using a tool like [Helm](https://helm.sh/), for instance. Now, if you are using Quarkus and desire even more convenience and a simpler way (with minimal manifest customization) without the need to worry about templates, etc., let me introduce you to the Quarkus Kubernetes extension.
 
 
 ## Kubernetes Extension
