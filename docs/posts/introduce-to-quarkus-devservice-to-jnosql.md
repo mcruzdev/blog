@@ -1,5 +1,5 @@
 ---
-title: Introduction to Quarkus DevService with Quarkus JNoSQL
+title: Quarkus DevServices with JNoSQL
 draft: false 
 date: 2024-01-22
 authors:
@@ -12,7 +12,7 @@ categories:
   - TestContainers
 ---
 
-# Introduction to Quarkus DevService with Quarkus JNoSQL
+# Quarkus DevServices with JNoSQL
 
 In this post, we will get an introduction to JNoSQL and Quarkus DevServices, two great tools that facilitate our lives as developers.
 
