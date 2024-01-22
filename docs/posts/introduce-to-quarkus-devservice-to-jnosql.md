@@ -506,7 +506,7 @@ Necessary dependencies:
 
 !!! info "Note"
 
-    Remove the ArangoDB dependencies first.
+    Remove the CouchDB dependencies first.
 
 
 ```xml
