@@ -29,10 +29,17 @@ Recently, in the Java world, the [JakartaOne](https://jakartaone.org/) event too
 
 If you are using Quarkus, you already know about the developer experience that Quarkus provides. DevServices is just the same thing: it increases the developer experience when you are coding a Quarkus application. Basically, if your application needs to access a database or send a message to Kafka, Quarkus provides it through `application.properties` configurations. It is an amazing experience because you do not have to worry about accessing the Kafka Docker website, obtaining the necessary configuration to start the Kafka container.
 
+It utilizes the TestContainers project behind the scenes to set up all the required infrastructure for testing and development mode.
+
 ## Knowing the quarkus-jnosql project
 
 Let's think that you want to use the Quarkus JNoSQL extension with ArangoDB implementation, to do it, you need to create a Quarkus application and add the following dependency into your `pom.xml`, it is very simple, looks:
 
+??? tip "Creating a Quarkus application"
+
+
+    If you have Quarkus CLI executes: ```quarkus create app```, if not access [https://code.quarkus.io](https://code.quarkus.io) and create your Quarkus application.
+    
 
 ```xml
 <dependency>
@@ -535,6 +542,10 @@ Result after creating a dev and getting all:
 	}
 ]
 ```
+
+## References
+
+- [DevServices Overview](https://pt.quarkus.io/guides/dev-services)
 
 ## Source code 
 
