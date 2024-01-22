@@ -24,6 +24,12 @@ theme:
     - content.code.annotate
     - navigation.indexes
 plugins:
+  - rss:
+      match_path: docs/posts/.* 
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
   - search
   - social:
   - blog:
@@ -47,6 +53,9 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 extra:
+  analytics:
+    provider: google
+    property: G-PC9M8DVZVW
   annotate:
     properties: [//]
   social:

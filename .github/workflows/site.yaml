@@ -27,6 +27,7 @@ jobs:
             mkdocs-material-
       - run: pip install mkdocs-material
       - run: pip install "mkdocs-material[imaging]"
+      - run: pip install mkdocs-rss-plugin
       - run: mkdocs gh-deploy --force
       - run: mkdocs build
       - uses: shallwefootball/s3-upload-action@master
