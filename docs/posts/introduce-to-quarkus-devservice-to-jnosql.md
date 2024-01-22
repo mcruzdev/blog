@@ -79,7 +79,7 @@ Our API will have a simple `Developer` entity and a simple resource. Below, you 
 package dev.matheuscruz;
 
 import java.util.Objects;
-import com.arangodb.serde.jackson.Id;
+import jakarta.nosql.Id;
 import jakarta.nosql.Column;
 import jakarta.nosql.Entity;
 
