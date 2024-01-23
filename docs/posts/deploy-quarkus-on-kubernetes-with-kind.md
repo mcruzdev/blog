@@ -1,4 +1,5 @@
 ---
+comments: true
 title: Deploying a Quarkus application on Kubernetes
 draft: false 
 date: 2024-01-17

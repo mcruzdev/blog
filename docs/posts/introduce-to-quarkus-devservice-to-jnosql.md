@@ -1,4 +1,5 @@
 ---
+comments: true
 title: Quarkus DevServices with JNoSQL
 draft: false 
 date: 2024-01-22

@@ -1,4 +1,5 @@
 ---
+comments: true
 title: Developing a Quarkus Extension
 draft: false 
 date: 2024-01-12
