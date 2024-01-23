@@ -8,7 +8,6 @@ authors:
 categories:
   - Java
   - Quarkus
-  - Jaeger
   - KinD
   - Kubernetes
   - Docker
