@@ -10,11 +10,14 @@ categories:
   - Quarkus
   - Microservices
   - Pattern
+  - Panache
+  - DevServices
+  - Scheduler
 ---
 
 If you need to save data into the database and then notify another service about the local changes, this post is for you!
 
-In this post, we will explore how to perform dual writes in a distributed systems scenario using Quarkus and Dev Services.
+In this post, we will explore how to perform dual writes in a distributed systems scenario using Quarkus.
 
 ## Scenario
 
@@ -213,7 +216,15 @@ In this post, you've seen how to implement the Outbox pattern. Another method fo
 
 ## Source code
 
+I used the following technologies in the repository:
+
+- Panache
+- PostgreSQL
+- DevServices
+- Scheduler
+
 If you'd like to view the entire code, you can access it [here](https://github.com/mcruzdev/quarkus-outbox-pattern).
+
 
 ## Thank you
 
