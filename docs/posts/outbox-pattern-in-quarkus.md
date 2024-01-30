@@ -1,6 +1,6 @@
 ---
 comments: true
-title: Oubox pattern in Quarkus
+title: Outbox pattern in Quarkus
 draft: false 
 date: 2024-01-29
 authors:
