@@ -38,10 +38,9 @@ I can do all in a single transaction, right?
 
 ```java
 public CreateOrderOutput execute(final CreateOrderInput input) {
-    Order order = new Order();
+    Order order = new Order(); // 1. Create the order
 
     QuarkusTransaction.requiringNew().run(() -> {
-    // 1. Create the `order`
     // 2. Save the `order` into the database;
     // 3. Save the order details in the database for reporting purposes;
     })
