@@ -17,7 +17,7 @@ categories:
 
 If you need to save data into the database and then notify another service about the local changes, this post is for you!
 
-In this post, we will explore how to perform dual writes in a distributed systems scenario using Quarkus.
+In this post, we will explore how to solve dual writes in a distributed systems using Quarkus.
 
 ## Scenario
 
