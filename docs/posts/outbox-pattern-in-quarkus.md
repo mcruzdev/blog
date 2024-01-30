@@ -1,7 +1,7 @@
 ---
 comments: true
 title: Outbox pattern in Quarkus
-draft: false 
+draft: true 
 date: 2024-01-29
 authors:
   - mcruzdev
