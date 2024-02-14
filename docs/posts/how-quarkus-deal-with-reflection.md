@@ -196,6 +196,20 @@ Hello World
 Hero: Batman
 ```
 
+### Using GraalVM Tracing Agent
+
+There is another way to generate those configuration files and metadata, is using the [GraalVM Tracing Agent](https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/), but it implies to execute your application. The agent **will look only the executed code** and generate all necessary configuration files and metadata into the specific directory.
+
+Below, you can see an example of the use of `native-image-agent`.
+
+```shell
+java -agentlib:native-image-agent=config-output-dir=/path/to/config-dir/,config-write-period-secs=300,config-write-initial-delay-secs=5 -jar my-app.jar
+```
+
+!!! Note
+
+    This agent will only look at executed code. It means that if the unknown code is not executed, the reflection configuration may not be generated.
+
 ## The Quarkus power!
 
 As we can see, adding a configuration file works well. It is just a simple class utilizing reflection. However, when using frameworks like Hibernate or libraries that heavily rely on reflection, manual configuration becomes necessary to ensure compatibility with Native Image generation. This involves creating Reflection Configuration Files to explicitly define the reflection usage and enable it within the Native Image, ensuring seamless integration with such libraries in native runtime environments. It is worth noting that this task can be quite challenging and time-consuming.
