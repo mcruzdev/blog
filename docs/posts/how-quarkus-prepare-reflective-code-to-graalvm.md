@@ -1,6 +1,6 @@
 ---
 comments: true
-title: How Quarkus deal with Reflection
+title: How Quarkus prepare reflective code to GraalVM
 draft: false 
 date: 2024-02-14
 authors:
@@ -11,12 +11,11 @@ categories:
   - Quarkus
 ---
 
-# How Quarkus deal with reflection to GraalVM
+# How Quarkus prepare reflective code to GraalVM
 
-When running a native application, reflection cannot be used in the same way as in applications running on top of the JVM. All code that will be executed during runtime needs to be known at build time. So, how does Quarkus deal with reflection to generate a native image using Graal SDK?
+When running a native application, reflection cannot be used in the same way as in applications running on top of the JVM. All code that will be executed during runtime needs to be known at build time. So, how does Quarkus prepare reflective code to generate a native image using Graal SDK?
 
 In this post, you'll see how Quarkus prepares reflection code configuration to be used by GraalVM.
-In this post, you'll see how Quarkus prepares reflection code configuration to be utilized by GraalVM.
 <!-- more -->
 
 > If you want to do the same steps with me, you need to install Graal VM. I used [SDKMAN!](https://sdkman.io/) to install GraalVM. I am using GraalVM Native image tool in the version `17.0.10 2024-01-16` 
