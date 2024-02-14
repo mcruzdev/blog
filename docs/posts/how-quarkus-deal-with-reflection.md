@@ -11,12 +11,12 @@ categories:
   - Quarkus
 ---
 
-# How Quarkus deal with reflection
+# How Quarkus deal with reflection to GraalVM
 
 When running a native application, reflection cannot be used in the same way as in applications running on top of the JVM. All code that will be executed during runtime needs to be known at build time. So, how does Quarkus deal with reflection to generate a native image using Graal SDK?
 
-In this post, you'll see how Quarkus deals with reflection using Ahead-Of-Time (AOT) compilation with GraalVM.
-
+In this post, you'll see how Quarkus prepares reflection code configuration to be used by GraalVM.
+In this post, you'll see how Quarkus prepares reflection code configuration to be utilized by GraalVM.
 <!-- more -->
 
 > If you want to do the same steps with me, you need to install Graal VM. I used [SDKMAN!](https://sdkman.io/) to install GraalVM. I am using GraalVM Native image tool in the version `17.0.10 2024-01-16` 
@@ -214,9 +214,9 @@ java -agentlib:native-image-agent=config-output-dir=/path/to/config-dir/,config-
 
 As we can see, adding a configuration file works well. It is just a simple class utilizing reflection. However, when using frameworks like Hibernate or libraries that heavily rely on reflection, manual configuration becomes necessary to ensure compatibility with Native Image generation. This involves creating Reflection Configuration Files to explicitly define the reflection usage and enable it within the Native Image, ensuring seamless integration with such libraries in native runtime environments. It is worth noting that this task can be quite challenging and time-consuming.
 
-### How Quarkus deal with reflection?
+### How does Quarkus configure a bunch of reflective code? 
 
-**The answer is using Build Items and something else...**
+**The answer is: Producing and consuming Build Items and something else...**
 
 Quarkus has some build items to register a class for reflection:
 
