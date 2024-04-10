@@ -50,7 +50,7 @@ markdown_extensions:
 extra:
   analytics:
     provider: google
-    # property: G-KSLDC17QRK
+    property: G-KSLDC17QRK
   annotate:
     properties: [//]
   social:
