@@ -1,2 +1,7 @@
 site
 .cache
+
+.DS_Store
+/blog-env
+
+/.quarkus
