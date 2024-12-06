@@ -17,19 +17,20 @@ categories:
 
 If you are already using Quarkus, you are likely familiar with the incredible developer experience it offers through features such as DevServices, DevUI, and live reload. You probably appreciate how these features enhance your experience.
 
-Now, imagine taking that developer joy to the next level by integrating it with the productivity and standardization provided by Dapr (obviously Quarkus provides standardization with Java specifications and productivity too).
+Now, imagine taking that developer joy to the next level when building complex distributed cloud native applications by integrating it with the productivity and standardization provided by Dapr. While Quarkus optimizes the experience for the development process of a single application, Dapr focuses more on providing best practices and well-known patterns to help developers to build distributed applications.
 
 In this blog post, we will explore what Dapr is and how to use it in combination with the Quarkus framework.
 
 <!-- more -->
 
+
 ## What is Dapr?
 
 
-Dapr means Distributed Application Runtime: 
+Dapr stands for Distributed Application Runtime: 
 > Dapr is a portable, event-driven runtime that makes it easy for any developer to build resilient, stateless, and stateful applications that run on the cloud and edge and embraces the diversity of languages and developer frameworks.
 
-In my opinion, what makes Dapr truly remarkable is the abstraction and standardization it provides when integrated into your architecture.
+In my opinion, what makes Dapr truly remarkable is the abstraction and standardization it provides in the shape of building blocks when integrated into your architecture.
 
 ### Dapr Building Blocks
 
@@ -37,31 +38,35 @@ So, what are Dapr building blocks? Essentially, building blocks are APIs accesse
 
 Remember when I mentioned abstraction?
 
-* Similarly, when you use the **State Management** building block, you are interacting with the Dapr runtime to store or retrieve data from a data store. This state store can be AWS DynamoDB, Azure CosmosDB, Redis, Cassandra, Firebase, and more.
+<diagram-here>
 
-The same principle applies to **Publish and Subscribe**. You interact with the Dapr API, and Dapr takes care of communication with the message broker on your behalf.
+* Similarly, when you use the **State Management** building block, you are interacting with the Dapr runtime to store or retrieve data from a data store. This state store can be AWS DynamoDB, Azure CosmosDB, Redis, Cassandra, Firebase, and [more](https://docs.dapr.io/reference/components-reference/supported-state-stores/).
 
-Dapr provides another building blocks:
+The same principle applies to **Publish and Subscribe**. You interact with the Dapr API, and Dapr takes care of communication with the message broker on your behalf. You can take a look at all the PubSub supported implementations here (https://docs.dapr.io/reference/components-reference/supported-pubsub/).
 
-* **Service Invocation**: Perform direct, secure, service-to-service method calls
+Dapr also provides other useful building blocks:
+
+* **Service Invocation**: Perform resilient (retries and circuit breakers), secure (mtls), service-to-service method calls.
 * **Workflow**: Orchestrate logic across various microservices
-* **State management**: Create long running stateful services
-* **Bindings**: Interface with or be triggered from external systems
+* **State management**: Create long running stateful services by persisting and retrieving data
+* **Bindings**: Integrate reliably with or be triggered from external systems
 * **Actors**: Encapsulate code and data in reusable actor objects as a common microservices design pattern
 * **Secrets management**: Securely access secrets from your application
 * **Configuration**: Manage and be notified of application configuration changes
-* **Distributed lock**: Distributed locks provide mutually exclusive access to shared resources from an application.
+* **Distributed lock**: Distributed locks provide mutually exclusive access to shared resources from an application. No need to add new libraries to your application or new components in the infrastructure.
 * **Cryptography**: Perform cryptographic operations without exposing keys to your application
 * **Jobs**: Manage the scheduling and orchestration of jobs
 
 Ufa!
 
-### Components
+How do you configure all these abstractions and integration points? Let’s look at Dapr Components.
+
+### Dapr Components
 
 
 Components serve as configurations for building blocks and applications. With components, you can define specific behaviors and characteristics when utilizing a building block.
 
-If you're an experienced developer, you might be asking: **Do I need to configure retries, dead letter topics, and resilience features if I don't have the Kafka API library to set up?**
+If you're an experienced developer, you might be asking: **Do I need to configure retries, dead letter queues, and resilience features if I don't have the Kafka API library to set up?**
 
 
 Getting Pub/Sub building block (using Kafka) as example, you can define routes to your topic:
@@ -100,18 +105,17 @@ spec:
   metadata:
   - name: connectionString
     value: "<CONNECTION STRING>"
-  - name: outboxPublishPubsub # Required
+  - name: outboxPublishPubsub # required
     value: "mypubsub"
-  - name: outboxPublishTopic # Required
+  - name: outboxPublishTopic # required
     value: "newOrder"
-  - name: outboxPubsub # Optional
+  - name: outboxPubsub # optional
     value: "myOutboxPubsub"
-  - name: outboxDiscardWhenMissingState #Optional. Defaults to false
+  - name: outboxDiscardWhenMissingState # optional, defaults to false
     value: false
 ```
 
-There a bunch of configurations and Component types, to see a more detailed view, see the [official documentation for each building block](https://docs.dapr.io/reference/components-reference/).
-
+There are a bunch of configurations and Component types, to see a more detailed view, see the [official documentation for each building block](https://docs.dapr.io/reference/components-reference/).
 
 
 ### What is Quarkus?
@@ -132,11 +136,10 @@ There are some benefits, I will list what makes sense for me actually:
 
 If you want to see more benefits about Quarkus, [see the official documentation](https://quarkus.io/).
 
-
 ## Creating you Quarkus application with Dapr
 
 
-Let's creat our Quarkus application with [Quarkus CLI](https://quarkus.io/guides/cli-tooling).
+Let's create our Quarkus application with [Quarkus CLI](https://quarkus.io/guides/cli-tooling).
 
 ```shell
 quarkus create app dev.matheuscruz:try-dapr -x=io.quarkiverse.dapr:quarkus-dapr
@@ -159,13 +162,12 @@ The previous command runs the Quarkus application in dev mode.
 
 By default, the `quarkus.dapr.devservices.enabled` is set to false. This property indicates wether the DevService for Dapr extension is enabled or not. Let's enable!
 
-
 ### Configuring the application
 
 Using your browser access the [DevUI Configuration](http://localhost:8080/q/dev-ui/configuration-form-editor). You will filter by `quarkus.dapr.devservice.enabled` and check the checkbox.
 
 
-![devUI](image.png)
+![devUI](./assets/configuring-dapr-on-quarkus-dev-ui.png)
 
 !!! tip "Looking the changes"
 
@@ -200,7 +202,7 @@ The `daprio/daprd` container is the Dapr sidecar, configured by the Dapr DevServ
                 "-components-path", "/components");
     ```
 
-    See the daprd refernce [here](https://docs.dapr.io/reference/arguments-annotations-overview/).
+    See the `daprd` reference [here](https://docs.dapr.io/reference/arguments-annotations-overview/).
 
 
 ## Using Pub/Sub 
@@ -251,7 +253,6 @@ public class ProductResource {
 4. The message that will be sent.
 
 By default, [Quarkus Dapr extension uses a in-memory Pub/Sub and State Store components](https://docs.quarkiverse.io/quarkus-dapr/dev/index.html#_using_in_memory_dapr_components), but you can [declare it through](https://docs.quarkiverse.io/quarkus-dapr/dev/index.html#_adding_dapr_components) `src/main/resources/components` folder.
-
 
 ### Consuming events
 
@@ -352,14 +353,11 @@ public class ProductCreatedHandler {
 
     public record Product(String name) {}
 }
-
 ```
 
 1. Trying to get the product, the `kvstore` is the state store component name created by Quakus Dapr extension, this is a in-memory state store.
 
 2. Saving the product.
-
-
 
 ### Testing the state store
 

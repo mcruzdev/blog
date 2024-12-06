@@ -5,3 +5,6 @@ site
 /blog-env
 
 /.quarkus
+
+
+.venv
