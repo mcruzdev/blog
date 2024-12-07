@@ -1,7 +1,7 @@
 ---
 authors:
   - mcruzdev
-date: 2024-09-17
+date: 2024-12-07
 categories:
   - Quarkus
   - Dapr
