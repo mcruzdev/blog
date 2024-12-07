@@ -28,23 +28,25 @@ Dapr stands for Distributed Application Runtime:
 
 > Dapr is a portable, event-driven runtime that makes it easy for any developer to build resilient, stateless, and stateful applications that run on the cloud and edge and embraces the diversity of languages and developer frameworks.
 
-In my opinion, what makes Dapr truly remarkable is the abstraction and standardization it provides in the shape of building blocks when integrated into your architecture.
+In my opinion, what makes Dapr truly remarkable is the **abstraction layer** and standardization it provides in the shape of building blocks when integrated into your architecture.
 
 ### Dapr Building Blocks
 
 So, what are Dapr building blocks? Essentially, building blocks are APIs accessed over the network through HTTP or gRPC calls. In this post, I will discuss in details only two building blocks, including: **Publish and Subscribe**, **State Management**.
 
-Remember when I mentioned abstraction?
 
 ![Diagram showing the communication between Quarkus and Dapr to use State Store and Pub/Sub](./assets/quarkus-dapr-diagram.png)
 
-!!! note Note
+??? note "Note about the diagram"
 
     The diagram above illustrates what we will implement in the following sections, using an in-memory State Store and Pub/Sub for simplicity. However, Dapr is not limited to these options and supports a wide range of state stores and messaging systems.
 
-Similarly, when you use the **State Management** building block, you are interacting with the Dapr runtime to store or retrieve data from a data store. This state store can be AWS DynamoDB, Azure CosmosDB, Redis, Cassandra, Firebase, and [more](https://docs.dapr.io/reference/components-reference/supported-state-stores/).
 
-The same principle applies to **Publish and Subscribe**. You interact with the Dapr API, and Dapr takes care of communication with the message broker on your behalf. You can take a look at all the PubSub supported implementations here (https://docs.dapr.io/reference/components-reference/supported-pubsub/).
+Remember when I mentioned **abstraction layer**?
+
+When you use the **State Management** building block, you are interacting with the Dapr runtime to store or retrieve data from a data store. This state store can be AWS DynamoDB, Azure CosmosDB, Redis, Cassandra, Firebase, and [more](https://docs.dapr.io/reference/components-reference/supported-state-stores/).
+
+The same principle applies to **Publish and Subscribe**. You interact with the Dapr API, and Dapr takes care of communication with the message broker on your behalf. You can take a look at all the PubSub supported implementations [here](https://docs.dapr.io/reference/components-reference/supported-pubsub/).
 
 Dapr also provides other useful building blocks:
 
