@@ -37,7 +37,7 @@ So, what are Dapr building blocks? Essentially, building blocks are APIs accesse
 
 ![Diagram showing the communication between Quarkus and Dapr to use State Store and Pub/Sub](./assets/quarkus-dapr-diagram.png)
 
-??? note "Note about the diagram"
+??? note "About the diagram"
 
     The diagram above illustrates what we will implement in the following sections, using an in-memory State Store and Pub/Sub for simplicity. However, Dapr is not limited to these options and supports a wide range of state stores and messaging systems.
 
@@ -94,7 +94,7 @@ scopes:
   - app2
 ```
 
-Getting State management as example, you can enable transaction outbox pattern, using the component specification:
+Getting State management as example, you can enable [transaction outbox pattern](./outbox-pattern-in-quarkus.md), using the component specification:
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
