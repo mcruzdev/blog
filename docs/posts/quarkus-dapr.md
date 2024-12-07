@@ -1,7 +1,6 @@
 ---
 authors:
   - mcruzdev
-draft: true 
 date: 2024-09-17
 categories:
   - Quarkus
@@ -23,11 +22,10 @@ In this blog post, we will explore what Dapr is and how to use it in combination
 
 <!-- more -->
 
-
 ## What is Dapr?
 
+Dapr stands for Distributed Application Runtime:
 
-Dapr stands for Distributed Application Runtime: 
 > Dapr is a portable, event-driven runtime that makes it easy for any developer to build resilient, stateless, and stateful applications that run on the cloud and edge and embraces the diversity of languages and developer frameworks.
 
 In my opinion, what makes Dapr truly remarkable is the abstraction and standardization it provides in the shape of building blocks when integrated into your architecture.
@@ -38,24 +36,28 @@ So, what are Dapr building blocks? Essentially, building blocks are APIs accesse
 
 Remember when I mentioned abstraction?
 
-<diagram-here>
+![Diagram showing the communication between Quarkus and Dapr to use State Store and Pub/Sub](./assets/quarkus-dapr-diagram.png)
 
-* Similarly, when you use the **State Management** building block, you are interacting with the Dapr runtime to store or retrieve data from a data store. This state store can be AWS DynamoDB, Azure CosmosDB, Redis, Cassandra, Firebase, and [more](https://docs.dapr.io/reference/components-reference/supported-state-stores/).
+!!! note Note
+
+    The diagram above illustrates what we will implement in the following sections, using an in-memory State Store and Pub/Sub for simplicity. However, Dapr is not limited to these options and supports a wide range of state stores and messaging systems.
+
+Similarly, when you use the **State Management** building block, you are interacting with the Dapr runtime to store or retrieve data from a data store. This state store can be AWS DynamoDB, Azure CosmosDB, Redis, Cassandra, Firebase, and [more](https://docs.dapr.io/reference/components-reference/supported-state-stores/).
 
 The same principle applies to **Publish and Subscribe**. You interact with the Dapr API, and Dapr takes care of communication with the message broker on your behalf. You can take a look at all the PubSub supported implementations here (https://docs.dapr.io/reference/components-reference/supported-pubsub/).
 
 Dapr also provides other useful building blocks:
 
-* **Service Invocation**: Perform resilient (retries and circuit breakers), secure (mtls), service-to-service method calls.
-* **Workflow**: Orchestrate logic across various microservices
-* **State management**: Create long running stateful services by persisting and retrieving data
-* **Bindings**: Integrate reliably with or be triggered from external systems
-* **Actors**: Encapsulate code and data in reusable actor objects as a common microservices design pattern
-* **Secrets management**: Securely access secrets from your application
-* **Configuration**: Manage and be notified of application configuration changes
-* **Distributed lock**: Distributed locks provide mutually exclusive access to shared resources from an application. No need to add new libraries to your application or new components in the infrastructure.
-* **Cryptography**: Perform cryptographic operations without exposing keys to your application
-* **Jobs**: Manage the scheduling and orchestration of jobs
+- **Service Invocation**: Perform resilient (retries and circuit breakers), secure (mtls), service-to-service method calls.
+- **Workflow**: Orchestrate logic across various microservices
+- **State management**: Create long running stateful services by persisting and retrieving data
+- **Bindings**: Integrate reliably with or be triggered from external systems
+- **Actors**: Encapsulate code and data in reusable actor objects as a common microservices design pattern
+- **Secrets management**: Securely access secrets from your application
+- **Configuration**: Manage and be notified of application configuration changes
+- **Distributed lock**: Distributed locks provide mutually exclusive access to shared resources from an application. No need to add new libraries to your application or new components in the infrastructure.
+- **Cryptography**: Perform cryptographic operations without exposing keys to your application
+- **Jobs**: Manage the scheduling and orchestration of jobs
 
 Ufa!
 
@@ -63,11 +65,9 @@ How do you configure all these abstractions and integration points? Let’s look
 
 ### Dapr Components
 
-
 Components serve as configurations for building blocks and applications. With components, you can define specific behaviors and characteristics when utilizing a building block.
 
 If you're an experienced developer, you might be asking: **Do I need to configure retries, dead letter queues, and resilience features if I don't have the Kafka API library to set up?**
-
 
 Getting Pub/Sub building block (using Kafka) as example, you can define routes to your topic:
 
@@ -103,41 +103,37 @@ spec:
   type: state.mysql
   version: v1
   metadata:
-  - name: connectionString
-    value: "<CONNECTION STRING>"
-  - name: outboxPublishPubsub # required
-    value: "mypubsub"
-  - name: outboxPublishTopic # required
-    value: "newOrder"
-  - name: outboxPubsub # optional
-    value: "myOutboxPubsub"
-  - name: outboxDiscardWhenMissingState # optional, defaults to false
-    value: false
+    - name: connectionString
+      value: "<CONNECTION STRING>"
+    - name: outboxPublishPubsub # required
+      value: "mypubsub"
+    - name: outboxPublishTopic # required
+      value: "newOrder"
+    - name: outboxPubsub # optional
+      value: "myOutboxPubsub"
+    - name: outboxDiscardWhenMissingState # optional, defaults to false
+      value: false
 ```
 
 There are a bunch of configurations and Component types, to see a more detailed view, see the [official documentation for each building block](https://docs.dapr.io/reference/components-reference/).
 
-
 ### What is Quarkus?
 
-Quarkus is a modern, open-source Java framework designed for building cloud-native applications. It optimizes Java specifically for Kubernetes and the cloud, providing a powerful solution for developing microservices and serverless applications. 
-
+Quarkus is a modern, open-source Java framework designed for building cloud-native applications. It optimizes Java specifically for Kubernetes and the cloud, providing a powerful solution for developing microservices and serverless applications.
 
 There are some benefits, I will list what makes sense for me actually:
 
+- **Native Compilation**: Quarkus prepare and allows you to generate a native image for you Operational System, without the need to have a JVM running.
 
-* **Native Compilation**: Quarkus prepare and allows you to generate a native image for you Operational System, without the need to have a JVM running.
+- **Live Reload**: When I am working with another frameworks and languages, I need to `run` > `change` > `stop` and `run`... in a loop. With Live reload I am happy, the feedback loop is very fast.
 
-* **Live Reload**: When I am working with another frameworks and languages, I need to `run` >  `change` > `stop` and `run`... in a loop. With Live reload I am happy, the feedback loop is very fast.
+- **Developer Joy**: With DevService and DevUI our life as developer is amazing, we do not nee more to access the Docker image documentation for a database, to copy and pase a `docker-compose.yml` file from a project to another... You just need to add an extension with DevService and your infrastructure is ready to use.
 
-* **Developer Joy**: With DevService and DevUI our life as developer is amazing, we do not nee more to access the Docker image documentation for a database, to copy and pase a `docker-compose.yml` file from a project to another... You just need to add an extension with DevService and your infrastructure is ready to use.
-
-* **Subatomic and Supersonic**: Thanks to [Quarkus's mission](https://quarkus.io/guides/writing-extensions#why-an-extension-framework), uses significantly less resources (CPU/Memory) than traditional approaches.
+- **Subatomic and Supersonic**: Thanks to [Quarkus's mission](https://quarkus.io/guides/writing-extensions#why-an-extension-framework), uses significantly less resources (CPU/Memory) than traditional approaches.
 
 If you want to see more benefits about Quarkus, [see the official documentation](https://quarkus.io/).
 
 ## Creating you Quarkus application with Dapr
-
 
 Let's create our Quarkus application with [Quarkus CLI](https://quarkus.io/guides/cli-tooling).
 
@@ -147,11 +143,9 @@ quarkus create app dev.matheuscruz:try-dapr -x=io.quarkiverse.dapr:quarkus-dapr
 
 The previous command creates a Quarkus application with `ìo.quarkiverse.dapr:quarkus-dapr` extension.
 
-
 ### Running the application
 
 Before configuring the DevService for running Dapr, let's run our Quarkus application:
-
 
 ```shell
 quarkus dev
@@ -159,13 +153,11 @@ quarkus dev
 
 The previous command runs the Quarkus application in dev mode.
 
-
 By default, the `quarkus.dapr.devservices.enabled` is set to false. This property indicates wether the DevService for Dapr extension is enabled or not. Let's enable!
 
 ### Configuring the application
 
 Using your browser access the [DevUI Configuration](http://localhost:8080/q/dev-ui/configuration-form-editor). You will filter by `quarkus.dapr.devservice.enabled` and check the checkbox.
-
 
 ![devUI](./assets/configuring-dapr-on-quarkus-dev-ui.png)
 
@@ -192,7 +184,7 @@ The `daprio/daprd` container is the Dapr sidecar, configured by the Dapr DevServ
     ```java
     withCommand(
                 "./daprd",
-                "-app-id", appName, 
+                "-app-id", appName,
                 "--dapr-listen-addresses=0.0.0.0",
                 "--app-protocol", "http",
                 "-placement-host-address", placementService + ":50006",
@@ -204,13 +196,9 @@ The `daprio/daprd` container is the Dapr sidecar, configured by the Dapr DevServ
 
     See the `daprd` reference [here](https://docs.dapr.io/reference/arguments-annotations-overview/).
 
-
-## Using Pub/Sub 
+## Using Pub/Sub
 
 Now, we have all necessary things to use Dapr with Quarkus - We have a Dapr Sidecar container running and our Quarkus application running/listening changes.
-
-
-### Publishing events 
 
 We will create a `ProductResource` responsible for publishing message through `SyncDaprClient`.
 
@@ -239,7 +227,7 @@ public class ProductResource {
     public Response create() {
         List<String> products = List.of("mouse", "gpu", "cpu");
         int random = new Random().nextInt(products.size());
-        syncDaprClient.publishEvent(DEV_SERVICE_PUBSUBE_NAME, "products.new", // (3) 
+        syncDaprClient.publishEvent(DEV_SERVICE_PUBSUBE_NAME, "products.new", // (3)
          products.get(random));  // (4)
         return Response.accepted().build();
     }
@@ -274,14 +262,14 @@ public class ProductCreatedHandler {
 
     @POST
     @Topic(name = "products.new", pubsubName = "pubsub") // click (1) to see more
-    @Path("/products") // (2) 
+    @Path("/products") // (2)
     public void handle(CloudEvent<String> event) {
         System.out.println("Received: " + event.getData());
     }
 }
 ```
 
-1. The `@Topic`annotation is responsible for mapping an endpoint to a topic, the `@Topic#name` is the name of the topic and the `@Topic#pubsubName` is the name of the Pub/Sub component. 
+1. The `@Topic`annotation is responsible for mapping an endpoint to a topic, the `@Topic#name` is the name of the topic and the `@Topic#pubsubName` is the name of the Pub/Sub component.
 
 2. This is just to get your topic mapped, you can set any string on `@Path#value`, it can be `banana` if you want.
 
@@ -289,13 +277,11 @@ public class ProductCreatedHandler {
 
 If we make a request to `/products`:
 
-
 ```shell
 curl -X POST http://localhost:8080/products
 ```
 
 We can see the following log in our application:
-
 
 ```shell
 Received: ...
@@ -305,7 +291,6 @@ Received: ...
 ## Using State Management
 
 Let's change our `ProductCreatedHandler` to use State Management building block.
-
 
 ```java
 package dev.matheuscruz.product;
@@ -334,7 +319,7 @@ public class ProductCreatedHandler {
     SyncDaprClient syncDaprClient;
 
     @POST
-    @Topic(name = "products.new", pubsubName = "pubsub") 
+    @Topic(name = "products.new", pubsubName = "pubsub")
     @Path("/products")
     public void handle(CloudEvent<String> event) {
         System.out.println("Received: " + event.getData());
@@ -357,20 +342,17 @@ public class ProductCreatedHandler {
 
 1. Trying to get the product, the `kvstore` is the state store component name created by Quakus Dapr extension, this is a in-memory state store.
 
-2. Saving the product.
+2. Using Dapr client to save a product.
 
 ### Testing the state store
 
-
 If we make some requests to `/products` endpoint:
-
 
 ```shell
 curl -X POST http://localhost:8080/products
 ```
 
 We can see the following log in our application:
-
 
 ```shell
 Received: book
@@ -382,6 +364,14 @@ We already have a product with name: Product[name=book]
 Received: book
 We already have a product with name: Product[name=book]
 ```
+
+## Post Summary
+
+In this post, we explored how to combine Quarkus and Dapr to enhance the developer experience when building distributed and cloud-native applications. We started by reviewing what Dapr is—a portable, event-driven runtime that provides building blocks like State Management and Pub/Sub, offering abstraction and standardization to simplify integrations with databases, message brokers, and other services.
+
+We also discussed Quarkus, a modern Java framework optimized for the cloud and Kubernetes, highlighting its benefits such as native compilation, live reload, and DevServices. We demonstrated how to create a Quarkus application integrated with Dapr, configure DevServices to enable a Dapr sidecar, and use the Pub/Sub and State Management building blocks through practical examples.
+
+Below, you can find some links to documentation and sample code to help deepen the concepts presented. This post makes it clear how combining Quarkus and Dapr can boost productivity and standardize the development of distributed applications.
 
 ## References
 
@@ -396,7 +386,6 @@ If you want to see a real code that uses Dapr, see the following repositories:
 
 - [https://github.com/mcruzdev/try-dapr](https://github.com/mcruzdev/try-dapr)
 - [https://github.com/mcruzdev/pizza-quarkus](https://github.com/mcruzdev/pizza-quarkus)
-
 
 ## Thank you
 
