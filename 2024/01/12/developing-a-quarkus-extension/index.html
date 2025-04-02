@@ -1,0 +1,2136 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://mcruzdev.github.io/blog/2024/01/12/developing-a-quarkus-extension/">
+      
+      
+      
+        <link rel="next" href="../../17/deploying-a-quarkus-application-on-kubernetes/">
+      
+      
+      <link rel="icon" href="../../../../me.jpeg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Developing a Quarkus Extension - matheuscruz.dev</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-KSLDC17QRK"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-KSLDC17QRK",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-KSLDC17QRK",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+      
+        <meta  property="og:type"  content="website" >
+      
+        <meta  property="og:title"  content="Developing a Quarkus Extension - matheuscruz.dev" >
+      
+        <meta  property="og:description"  content="None" >
+      
+        <meta  property="og:image"  content="https://mcruzdev.github.io/blog/assets/images/social/posts/developing-quarkus-extension.png" >
+      
+        <meta  property="og:image:type"  content="image/png" >
+      
+        <meta  property="og:image:width"  content="1200" >
+      
+        <meta  property="og:image:height"  content="630" >
+      
+        <meta  property="og:url"  content="https://mcruzdev.github.io/blog/2024/01/12/developing-a-quarkus-extension/" >
+      
+        <meta  name="twitter:card"  content="summary_large_image" >
+      
+        <meta  name="twitter:title"  content="Developing a Quarkus Extension - matheuscruz.dev" >
+      
+        <meta  name="twitter:description"  content="None" >
+      
+        <meta  name="twitter:image"  content="https://mcruzdev.github.io/blog/assets/images/social/posts/developing-quarkus-extension.png" >
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#developing-a-quarkus-extension" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="matheuscruz.dev" class="md-header__button md-logo" aria-label="matheuscruz.dev" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 10h-2V8h2m0 5h-2v-2h2m-3-1h-2V8h2m0 5h-2v-2h2m0 6H8v-2h8m-9-5H5V8h2m0 5H5v-2h2m1 0h2v2H8m0-5h2v2H8m3 1h2v2h-2m0-5h2v2h-2m9-5H4c-1.11 0-2 .89-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            matheuscruz.dev
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Developing a Quarkus Extension
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mcruzdev/blog/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="matheuscruz.dev" class="md-nav__button md-logo" aria-label="matheuscruz.dev" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 10h-2V8h2m0 5h-2v-2h2m-3-1h-2V8h2m0 5h-2v-2h2m0 6H8v-2h8m-9-5H5V8h2m0 5H5v-2h2m1 0h2v2H8m0-5h2v2H8m3 1h2v2h-2m0-5h2v2h-2m9-5H4c-1.11 0-2 .89-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2"/></svg>
+
+    </a>
+    matheuscruz.dev
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mcruzdev/blog/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Blog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Archive
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Archive
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2024/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2024
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Categories
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/dapr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dapr
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/devservices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    DevServices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/event-driven/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Event-Driven
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/gizmo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gizmo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/jnosql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JNoSQL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/jandex/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jandex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/java/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Java
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/kind/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    KinD
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/kubernetes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kubernetes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/microservices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Microservices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/panache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Panache
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pattern
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/quarkus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quarkus
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/redis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Redis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/scheduler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scheduler
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/testcontainers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TestContainers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tldr" class="md-nav__link">
+    <span class="md-ellipsis">
+      TL;DR
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-quarkus-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Quarkus extension?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quarkus-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quarkus CLI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-will-our-extension-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      What will our extension do?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating the extension
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quarkus-extension-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quarkus extension structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-1-implementing-the-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Feature #1] Implementing the Notifier
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[Feature #1] Implementing the Notifier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-our-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating our configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calling-the-http-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calling the HTTP service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recording-the-notifyusefulconfiguration-config-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recording the notify(UsefulConfiguration config) method
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-steps-and-build-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build steps and build items
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-the-build-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating the build step
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-2-implementing-our-greetingservice-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Feature #2] Implementing our GreetingService interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[Feature #2] Implementing our GreetingService interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gizmo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gizmo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-the-greetingservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating the GreetingService
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-the-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating the implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-our-hidden-greetingservice-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using our hidden GreetingService implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-3-counting-the-number-of-crud-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      [Feature #3] Counting the number of CRUD methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[Feature #3] Counting the number of CRUD methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jandex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Jandex
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consolerecorder" class="md-nav__link">
+    <span class="md-ellipsis">
+      ConsoleRecorder
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-the-deployment-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating the deployment code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-our-extension-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing our extension feature
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#references-and-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      References and resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Source code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thank-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thank you
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../.." class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://avatars.githubusercontent.com/u/56329339?v=4" alt="Matheus Cruz">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          <a href="https://github.com/mcruzdev">Matheus Cruz</a>
+                        
+                      </strong>
+                      <br>
+                      Software Engineer
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2024-01-12 00:00:00+00:00" class="md-ellipsis">January 12, 2024</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/java/">Java</a>, 
+                              <a href="../../../../category/quarkus/">Quarkus</a>, 
+                              <a href="../../../../category/gizmo/">Gizmo</a>, 
+                              <a href="../../../../category/jandex/">Jandex</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              14 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+
+  
+  
+
+
+<h1 id="developing-a-quarkus-extension">Developing a Quarkus Extension</h1>
+<h2 id="tldr">TL;DR</h2>
+<p>This post demonstrates how to create a Quarkus extension that provides three features that:</p>
+<ul>
+<li>Notify an API regarding the application's <code>starting</code> status;</li>
+<li>Offer a implementation class created with <a href="https://github.com/quarkusio/gizmo">Gizmo</a>;</li>
+<li>Count the number of methods using <code>@GET</code>, <code>@POST</code>, <code>@PUT</code>, <code>@DELETE</code> annotations using <a href="https://github.com/smallrye/jandex">Jandex</a>;  </li>
+</ul>
+<h2 id="why-quarkus-extension">Why Quarkus extension?</h2>
+<p>Quarkus is both a framework and a build time <strong>augmentation</strong> toolkit. Its principal concept is "do as much as possible during build time instead of runtime", this concept is what helps Quarkus achieve a very low startup time and a smaller memory footprint.</p>
+<!-- more -->
+<p>Quarkus enables the creation of a Native Image through Graal VM, making it an excellent choice for Serverless systems that require minimal startup time and memory usage.</p>
+<p>Additionally, Quarkus is a framework that has been captivating developers with its development experience. In the growth of internal developer platforms that aim for a developer-friendly experience, the experience that Quarkus provides is something to be considered.</p>
+<p>Keeping in mind these initial concepts, let's try to answer some questions:</p>
+<ul>
+<li>
+<p>Some libraries perform actions at runtime (class path scanning, proxies, etc.) instead of build time. How can we adapt them to the Quarkus closed world?</p>
+</li>
+<li>
+<p>Quarkus leverages the Graal SDK to generate a native application. However, it's essential to note that <a href="https://pt.quarkus.io/guides/writing-native-applications-tips">Graal VM does need some tweaks</a>, and all executable code needs to be known before running. How can I adjust the code to be used as correct input for GraalVM?</p>
+</li>
+<li>
+<p>Managing an Internal Developer Platform with over 100+ Quarkus applications in production, I need to implement a specific cross-cutting approach across all applications. What is the recommended method to achieve this?</p>
+</li>
+</ul>
+<p>Commonly, the answer for all questions (when you are using Quarkus) is: <strong>Create a Quarkus extension</strong>.</p>
+<!-- more -->
+<h2 id="quarkus-cli">Quarkus CLI</h2>
+<p>The Quarkus CLI is an incredibly useful tool for working with Quarkus.</p>
+<p>There are several ways to install the Quarkus CLI. </p>
+<details class="info">
+<summary>Installing Quarkus CLI</summary>
+<p><a href="https://quarkus.io/guides/cli-tooling#installing-the-cli">Refer to the official documentation for installation instructions</a>.</p>
+</details>
+<p>With Quarkus CLI, we can <code>create</code>, <code>build</code>, <code>deploy</code> applications and perform essential tasks in a developer's day-to-day workflow. Be sure that you have it installed.</p>
+<h2 id="what-will-our-extension-do">What will our extension do?</h2>
+<ul>
+<li>Notify an API regarding the application's <code>starting</code> status;</li>
+<li>Offer a simple implementation class with <a href="https://github.com/quarkusio/gizmo">Gizmo</a>;</li>
+<li>Count the number of methods using <code>@GET</code>, <code>@POST</code>, <code>@PUT</code>, <code>@DELETE</code> annotations using <a href="https://github.com/smallrye/jandex">Jandex</a>; </li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Note</p>
+<p>All features are simple compared to real-world applications, but they serve as a great starting point to grasp and initiate your journey into the world of Quarkus extensions!</p>
+</div>
+<h2 id="creating-the-extension">Creating the extension</h2>
+<p>Once the Quarkus CLI is installed, we will use it to create our useful extension.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>quarkus<span class="w"> </span>create<span class="w"> </span>extension<span class="w"> </span>dev.matheuscruz:quarkus-useful:0.0.1-SNAPSHOT
+</span></code></pre></div>
+<p>The desired output should be similar to:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Detected<span class="w"> </span>layout<span class="w"> </span><span class="nb">type</span><span class="w"> </span>is<span class="w"> </span><span class="s1">&#39;standalone&#39;</span><span class="w"> </span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Generated<span class="w"> </span>runtime<span class="w"> </span>artifactId<span class="w"> </span>is<span class="w"> </span><span class="s1">&#39;quarkus-useful&#39;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>applying<span class="w"> </span>codestarts...
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>📚<span class="w"> </span>java
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>🔨<span class="w"> </span>maven
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>📦<span class="w"> </span>quarkus-extension
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>🚀<span class="w"> </span>devmode-test
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>🚀<span class="w"> </span>extension-base
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>🚀<span class="w"> </span>integration-tests
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>🚀<span class="w"> </span>unit-test
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>-----------
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w"> </span>👍<span class="w">  </span>extension<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>successfully<span class="w"> </span>generated<span class="w"> </span><span class="k">in</span>:
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>--&gt;<span class="w"> </span>/home/cruz/github.com/mcruzdev/quarkus-useful
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>-----------
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>Navigate<span class="w"> </span>into<span class="w"> </span>this<span class="w"> </span>directory<span class="w"> </span>and<span class="w"> </span>get<span class="w"> </span>started:<span class="w"> </span>quarkus<span class="w"> </span>build
+</span></code></pre></div>
+<p>We are using the <code>standalone</code> layout, if you want to use the <a href="https://github.com/quarkiverse">Quarkiverse</a> layout execute the following command.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>quarkus<span class="w"> </span>create<span class="w"> </span>extension<span class="w"> </span>io.quarkiverse:quarkus-useful:0.0.1-SNAPSHOT
+</span></code></pre></div>
+<h2 id="quarkus-extension-structure">Quarkus extension structure</h2>
+<p>A Quarkus extension is divided in two modules, <code>deployment</code> and <code>runtime</code>.</p>
+<ul>
+<li>
+<p>The <code>deployment</code> module contains various components, such as build steps and build items, that play important roles in the application <strong>augmentation</strong> process.</p>
+</li>
+<li>
+<p>The <code>runtime</code> module contains runtime code that are used by <code>deployment</code> module at build time. </p>
+</li>
+</ul>
+<p><strong>It might seem odd: Why is runtime code executed and utilized by build-time code?</strong></p>
+<blockquote>
+<p>The reason is that runtime code is designed to be recorded for execution later. When you write this code, it's intended to be executed or used at a later stage.</p>
+</blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Note</p>
+<p>A <code>deployment</code> module must depend on the <code>runtime</code> module.</p>
+</div>
+<h2 id="feature-1-implementing-the-notifier">[Feature #1] Implementing the Notifier</h2>
+<p><strong>What do we need here, and what is the expected behavior?</strong></p>
+<p>We want that, when the application start we want to send a HTTP request to a specific endpoint, notifying that the application is starting.</p>
+<div class="admonition warning">
+<p class="admonition-title">Use Quarkus Lifecycle instead</p>
+<p>This is merely a sample, demonstrating the capabilities of a Quarkus extension. Avoid using it in production scenarios. For a limited number of applications, consider utilizing the <a href="https://quarkus.io/guides/lifecycle">Quarkus Lifecycle</a> feature instead.</p>
+</div>
+<h3 id="creating-our-configuration">Creating our configuration</h3>
+<p>To call a REST service, you'll require the resource's URI. How can you retrieve this information or determine what the URI is?</p>
+<p>We can do it into the code:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">REST_ENDPOINT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://api.quarkus.com/apps&quot;</span>
+</span></code></pre></div></td></tr></table></div>
+<p>But, it is not a good practice. Quarkus aims to facilitate the creation of Cloud Native applications, and a good Cloud Native application uses (when necessary) <a href="https://12factor.net/config">12 Factors - Configuration</a> approach.</p>
+<p>We need to make this configurable. I don't want to change the code and go through the entire release process (pull requests, approvals, pipelines, deployment, etc.) just to upload my extension with a new endpoint. To achieve this, Quarkus allows us to accomplish it using the <a href="https://quarkus.io/guides/config-reference">Configuration</a> feature. You simply need to create a POJO class and annotate it with <code>@io.quarkus.runtime.annotations.ConfigRoot</code>.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span>
+<span class="normal"><a href="#__codelineno-4-17">17</a></span>
+<span class="normal"><a href="#__codelineno-4-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.matheuscruz.quarkus.useful.runtime</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Optional</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkus.runtime.annotations.ConfigItem</span><span class="p">;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkus.runtime.annotations.ConfigPhase</span><span class="p">;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkus.runtime.annotations.ConfigRoot</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="hll"><span class="nd">@ConfigRoot</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;useful&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">phase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConfigPhase</span><span class="p">.</span><span class="na">BUILD_AND_RUN_TIME_FIXED</span><span class="p">)</span>
+</span></span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UsefulConfiguration</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="cm">/**</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="cm">     * The listener URL to be notified about the &#39;starting&#39; event of the</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="cm">     * application.</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="cm">     */</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">    </span><span class="nd">@ConfigItem</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;listenerUrl&quot;</span><span class="p">)</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">listenerUrl</span><span class="p">;</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Defining a proprety as Optional</p>
+<p>To define a configuration property as optional, you need to define the property as <code>Optional&lt;T&gt;</code>.</p>
+</div>
+<ul>
+<li>
+<p>The element <code>name</code> means the configuration property name. At the final the properties inside the <code>UsefulConfiguration</code> will be the prefix <code>quarkus.useful</code>.</p>
+</li>
+<li>
+<p>The element <code>phase</code> indicates when this configuration will be visible.</p>
+</li>
+</ul>
+<details class="info">
+<summary>ConfigPhase enum</summary>
+<ul>
+<li><code>BUILD_TIME</code> - Values are read and available for usage at build time.</li>
+<li><code>BUILD_AND_RUNTIME_FIXED</code> - Values are read and available for usage at build time, and available on a read-only basis at run time.</li>
+<li><code>RUN_TIME</code> - Values are read and available for usage at run time and are re-read on each program execution.</li>
+</ul>
+</details>
+<p>Perfect, now that we have the configuration available, let's use it.</p>
+<h3 id="calling-the-http-service">Calling the HTTP service</h3>
+<p>As mentioned previously, all code that executes at runtime should be in the <code>runtime</code> module.</p>
+<p>Let's create the call to notify the <code>starting</code> event.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span>
+<span class="normal"><a href="#__codelineno-5-14">14</a></span>
+<span class="normal"><a href="#__codelineno-5-15">15</a></span>
+<span class="normal"><a href="#__codelineno-5-16">16</a></span>
+<span class="normal"><a href="#__codelineno-5-17">17</a></span>
+<span class="normal"><a href="#__codelineno-5-18">18</a></span>
+<span class="normal"><a href="#__codelineno-5-19">19</a></span>
+<span class="normal"><a href="#__codelineno-5-20">20</a></span>
+<span class="normal"><a href="#__codelineno-5-21">21</a></span>
+<span class="normal"><a href="#__codelineno-5-22">22</a></span>
+<span class="normal"><a href="#__codelineno-5-23">23</a></span>
+<span class="normal"><a href="#__codelineno-5-24">24</a></span>
+<span class="normal"><a href="#__codelineno-5-25">25</a></span>
+<span class="normal"><a href="#__codelineno-5-26">26</a></span>
+<span class="normal"><a href="#__codelineno-5-27">27</a></span>
+<span class="normal"><a href="#__codelineno-5-28">28</a></span>
+<span class="normal"><a href="#__codelineno-5-29">29</a></span>
+<span class="normal"><a href="#__codelineno-5-30">30</a></span>
+<span class="normal"><a href="#__codelineno-5-31">31</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="hll"><span class="nd">@Recorder</span><span class="w"> </span><span class="c1">// (3)</span>
+</span></span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">NotifyStartingEventRecorder</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="n">LOGGER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoggerFactory</span><span class="p">.</span><span class="na">getLogger</span><span class="p">(</span><span class="n">NotifyStartingEventRecorder</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="hll"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="n">UsefulConfiguration</span><span class="w"> </span><span class="n">config</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)</span>
+</span></span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">config</span><span class="p">.</span><span class="na">listenerUrl</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">            </span><span class="n">LOGGER</span><span class="p">.</span><span class="na">warn</span><span class="p">(</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">                    </span><span class="s">&quot;You are using the &#39;quarkus-useful&#39; extension but the configuration property quarkus.useful.listenerUrl not defined&quot;</span><span class="p">);</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">            </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="hll"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">applicationName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConfigProvider</span><span class="p">.</span><span class="na">getConfig</span><span class="p">()</span><span class="w"> </span><span class="c1">// (2)</span>
+</span></span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">                </span><span class="p">.</span><span class="na">getConfigValue</span><span class="p">(</span><span class="s">&quot;quarkus.application.name&quot;</span><span class="p">)</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">                </span><span class="p">.</span><span class="na">getValue</span><span class="p">();</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16"></a>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&quot;{ \&quot;applicationName\&quot;: \&quot;%s\&quot; }&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">applicationName</span><span class="p">);</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">        </span><span class="n">HttpRequest</span><span class="w"> </span><span class="n">httpRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HttpRequest</span><span class="p">.</span><span class="na">newBuilder</span><span class="p">(</span><span class="n">URI</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">config</span><span class="p">.</span><span class="na">listenerUrl</span><span class="p">.</span><span class="na">get</span><span class="p">()))</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">                </span><span class="p">.</span><span class="na">POST</span><span class="p">(</span><span class="n">BodyPublishers</span><span class="p">.</span><span class="na">ofString</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">                </span><span class="p">.</span><span class="na">build</span><span class="p">();</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21"></a>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">        </span><span class="n">HttpClient</span><span class="w"> </span><span class="n">httpClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HttpClient</span><span class="p">.</span><span class="na">newHttpClient</span><span class="p">();</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23"></a>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w">        </span><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">HttpResponse</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">httpResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">httpClient</span><span class="p">.</span><span class="na">sendAsync</span><span class="p">(</span><span class="n">httpRequest</span><span class="p">,</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w">                </span><span class="n">BodyHandlers</span><span class="p">.</span><span class="na">ofString</span><span class="p">());</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26"></a>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w">        </span><span class="n">httpResponse</span><span class="p">.</span><span class="na">thenAccept</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w">            </span><span class="n">LOGGER</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;The quarkus-useful-extension gets the HTTP status code: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">statusCode</span><span class="p">());</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w">        </span><span class="p">});</span>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<ol>
+<li>Quarkus automagically injects the configuration POJO into the Recorder class.</li>
+<li>Quarkus uses <a href="https://microprofile.io/specifications/microprofile-config/">Microprofile Config</a> to access all provided configurations.</li>
+<li>The annotation <code>@Recorder</code> indicates that the given type is a recorder that is used to record actions to be executed at runtime.</li>
+</ol>
+<p>Perfectly, we have created our code that represents the code to be recorded. We will create now, the build step that will record this piece of code.</p>
+<h3 id="recording-the-notifyusefulconfiguration-config-method">Recording the <code>notify(UsefulConfiguration config)</code> method</h3>
+<p>Now, we will create the class responsible for recording our runtime code.</p>
+<p>As mentioned previously all code related to the build process should be in <code>deployment</code> module. If you see into <code>deployment</code> module, there is a class called <code>QuarkusUsefulProcessor</code> (generated by Quarkus CLI):</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span>
+<span class="normal"><a href="#__codelineno-6-13">13</a></span>
+<span class="normal"><a href="#__codelineno-6-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.matheuscruz.quarkus.useful.deployment</span><span class="p">;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkus.deployment.annotations.BuildStep</span><span class="p">;</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkus.deployment.builditem.FeatureBuildItem</span><span class="p">;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="kd">class</span> <span class="nc">QuarkusUsefulProcessor</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">FEATURE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;quarkus-useful&quot;</span><span class="p">;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="hll"><span class="w">    </span><span class="nd">@BuildStep</span>
+</span></span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="hll"><span class="w">    </span><span class="n">FeatureBuildItem</span><span class="w"> </span><span class="nf">feature</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span></span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="hll"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FeatureBuildItem</span><span class="p">(</span><span class="n">FEATURE</span><span class="p">);</span>
+</span></span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="hll"><span class="w">    </span><span class="p">}</span>
+</span></span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The Quarkus CLI generated a method with the <code>@BuildStep</code> annotation, indicating that this method is a step in the build process. Build step methods can produce or consume build items. In this case, it produces one build item called <code>FeatureBuildItem</code>.</p>
+<p>The <code>FeatureBuildItem</code> is used to include the feature (<code>quarkus-useful</code>) to be printed at startup, for example:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Installed<span class="w"> </span>features:<span class="w"> </span><span class="o">[</span>cdi,<span class="w"> </span>quarkus-useful,<span class="w"> </span>resteasy,<span class="w"> </span>smallrye-context-propagation,<span class="w"> </span>vertx<span class="o">]</span>
+</span></code></pre></div>
+<h3 id="build-steps-and-build-items">Build steps and build items</h3>
+<p><img alt="build-steps-and-build-items" src="../../../../assets/build-steps-and-build-items.png" /></p>
+<ul>
+<li>
+<p>Build steps are methods annotated with <code>@BuildStep</code> annotation that performs a step in the build process;</p>
+</li>
+<li>
+<p>Build items are:</p>
+<blockquote>
+<p>... the communication mechanism between build steps - Holly Cummins </p>
+</blockquote>
+</li>
+<li>
+<p>Quarkus automatically determines correctly execution order and injects parameters (<code>BuildItem</code>, <code>BuildProducer</code>, configuration classes, etc.);</p>
+</li>
+<li>
+<p>If you intend to utilize a build item through injection, remember that your build step will execute after the injected build item is produced;</p>
+</li>
+<li>
+<p>There are initial, intermediate, and terminal state build steps. Custom extensions are commonly found in the intermediate state.</p>
+</li>
+</ul>
+<h3 id="creating-the-build-step">Creating the build step</h3>
+<p>Let's create the method in the <code>QuarkusUsefulProcessor</code> class that will handle recording our notifier.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span>
+<span class="normal"><a href="#__codelineno-8-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nd">@BuildStep</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nd">@Record</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExecutionTime</span><span class="p">.</span><span class="na">RUNTIME_INIT</span><span class="p">)</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">recordNotifyStartingEventRecorder</span><span class="p">(</span><span class="n">UsefulConfiguration</span><span class="w"> </span><span class="n">config</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">        </span><span class="n">NotifyStartingEventRecorder</span><span class="w"> </span><span class="n">recorder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">    </span><span class="c1">// the following call will be recorded</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">notify</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p><strong>What does the <code>@Record</code> annotation mean, and what is the value <code>ExecutionTime.RUNTIME_INIT</code>?</strong></p>
+<p>The <code>ExecutionTime</code> enum has two options: <code>RUNTIME_INIT</code> and <code>STATIC_INIT</code>.</p>
+<p>Let's dive into some simple code examples to understand how these choices impact bytecode.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-9-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-9-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-9-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-9-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-9-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-9-10">10</a></span>
+<span class="normal"><a href="#__codelineno-9-11">11</a></span>
+<span class="normal"><a href="#__codelineno-9-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">GeneratedBytecode</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">    </span><span class="c1">// @Record(value = ExecutionTime.STATIC_INIT)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">    </span><span class="c1">// All code recorded with STATIC_INIT will be here.</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">args</span><span class="o">[]</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">    </span><span class="c1">// @Record(value = ExecutionTime.RUNTIME_INIT)</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="w">    </span><span class="c1">// All code recorded with RUNTIME_INIT will be here.</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<details class="tip">
+<summary>See more: How to see the generated bytecode</summary>
+<p>If you want to see the bytecode generated, into extension root dir runs:</p>
+<ul>
+<li><code>mvn clean install</code></li>
+<li>cd <code>integration-tests</code></li>
+<li><code>mvn clean package -DskipTests -Dquarkus.package.vineflower.enabled=true</code></li>
+<li><code>cat target/decompiled/generated-bytecode/io/quarkus/runner/ApplicationImpl.java</code></li>
+</ul>
+<p>You will see that in the method <code>doStart(String[] var1)</code> there is a piece of code like it: <code>(new QuarkusUsefulProcessor$recordNotifyStartingEventRecorder1857232657()).deploy(var2);</code></p>
+<p>The option <code>quarkus.package.vineflower.enabled=true</code> tell to Quarkus decompile generated and transformed bytecode into the 'decompiled' directory. </p>
+</details>
+<p>Perfect, if you want to test the notifier, execute:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>install
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nb">cd</span><span class="w"> </span>integration-tests
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>quarkus<span class="w"> </span>dev
+</span></code></pre></div>
+<p>The output should looks like:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="m">2024</span>-01-06<span class="w"> </span><span class="m">19</span>:17:34,449<span class="w"> </span>WARN<span class="w">  </span><span class="o">[</span>dev.mat.qua.use.run.NotifyStartingEventRecorder<span class="o">]</span><span class="w"> </span><span class="o">(</span>Quarkus<span class="w"> </span>Main<span class="w"> </span>Thread<span class="o">)</span><span class="w"> </span>You<span class="w"> </span>are<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span><span class="s1">&#39;quarkus-useful&#39;</span><span class="w"> </span>extension<span class="w"> </span>but<span class="w"> </span>the<span class="w"> </span>configuration<span class="w"> </span>property<span class="w"> </span>quarkus.useful.listenerUrl<span class="w"> </span>not<span class="w"> </span>defined
+</span></code></pre></div>
+<p>It happened because we forgot to set the <code>quarkus.useful.listenerUrl</code> property into <code>application.properties</code> file. Add the configuration property to <code>application.properties</code> and observe the result.</p>
+<details class="tip">
+<summary>Mocking HTTP request</summary>
+<div class="language-text highlight"><pre><span></span><code>Use https://app.beeceptor.com/ this service to mock the HTTP request.
+</code></pre></div>
+</details>
+<p>Now, that we have configured the <code>quarkus.useful.listenerUrl</code>, the output should looks like it: </p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:44:00,303<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>io.quarkus<span class="o">]</span><span class="w"> </span><span class="o">(</span>main<span class="o">)</span><span class="w"> </span>quarkus-useful-integration-tests<span class="w"> </span><span class="m">0</span>.0.1-SNAPSHOT<span class="w"> </span>on<span class="w"> </span>JVM<span class="w"> </span><span class="o">(</span>powered<span class="w"> </span>by<span class="w"> </span>Quarkus<span class="w"> </span><span class="m">3</span>.6.5<span class="o">)</span><span class="w"> </span>started<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.980s.<span class="w"> </span>Listening<span class="w"> </span>on:<span class="w"> </span>http://0.0.0.0:8080
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:44:00,304<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>io.quarkus<span class="o">]</span><span class="w"> </span><span class="o">(</span>main<span class="o">)</span><span class="w"> </span>Profile<span class="w"> </span>prod<span class="w"> </span>activated.<span class="w"> </span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:44:00,304<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>io.quarkus<span class="o">]</span><span class="w"> </span><span class="o">(</span>main<span class="o">)</span><span class="w"> </span>Installed<span class="w"> </span>features:<span class="w"> </span><span class="o">[</span>cdi,<span class="w"> </span>quarkus-useful,<span class="w"> </span>resteasy,<span class="w"> </span>smallrye-context-propagation,<span class="w"> </span>vertx<span class="o">]</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:44:01,107<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>dev.mat.qua.use.run.NotifyStartingEventRecorder<span class="o">]</span><span class="w"> </span><span class="o">(</span>ForkJoinPool.commonPool-worker-1<span class="o">)</span><span class="w"> </span>The<span class="w"> </span>quarkus-useful-extension<span class="w"> </span>gets<span class="w"> </span>the<span class="w"> </span>HTTP<span class="w"> </span>status<span class="w"> </span>code:<span class="w"> </span><span class="m">200</span>
+</span></code></pre></div>
+<h2 id="feature-2-implementing-our-greetingservice-interface">[Feature #2] Implementing our GreetingService interface</h2>
+<p>In some scenarios, offering a default implementation to our extension consumers becomes necessary, as seen in great libraries. </p>
+<p>Essentially, in our case the user will inject a <code>GreetingService</code> interface, and the extension will provide a default implementation behind the scenes (using Gizmo <img alt="😄" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f604.svg" title=":smile:" />).</p>
+<p>The interface:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span>
+<span class="normal"><a href="#__codelineno-13-2">2</a></span>
+<span class="normal"><a href="#__codelineno-13-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">GreetingService</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">  </span><span class="n">String</span><span class="w"> </span><span class="nf">message</span><span class="p">();</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The user's code:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-14-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-14-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-14-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-14-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-14-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-14-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-14-10">10</a></span>
+<span class="normal"><a href="#__codelineno-14-11">11</a></span>
+<span class="normal"><a href="#__codelineno-14-12">12</a></span>
+<span class="normal"><a href="#__codelineno-14-13">13</a></span>
+<span class="normal"><a href="#__codelineno-14-14">14</a></span>
+<span class="normal"><a href="#__codelineno-14-15">15</a></span>
+<span class="normal"><a href="#__codelineno-14-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nd">@Path</span><span class="p">(</span><span class="s">&quot;/greetings&quot;</span><span class="p">)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">GreetingResource</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">  </span><span class="n">GreetingService</span><span class="w"> </span><span class="n">service</span><span class="p">;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="w">  </span><span class="c1">// Injected by ArC dependency injection  </span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="nf">GreetingResource</span><span class="p">(</span><span class="n">GreetingService</span><span class="w"> </span><span class="n">service</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="na">service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">service</span><span class="p">;</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10"></a>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="w">  </span><span class="nd">@GET</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="w">  </span><span class="nd">@Produces</span><span class="p">(</span><span class="n">MediaType</span><span class="p">.</span><span class="na">TEXT_PLAIN</span><span class="p">)</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13"></a><span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">greeting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">service</span><span class="p">.</span><span class="na">message</span><span class="p">();</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>There are several ways to achieve this with Quarkus. One approach is implementing the interface and providing it by using CDI directly. However, let's get hands-on with Gizmo to get our initial experience with this tooling. </p>
+<h3 id="gizmo">Gizmo</h3>
+<p><a href="https://github.com/quarkusio/gizmo">Gizmo</a> is a library used by Quarkus to generate bytecode. If you are interested, there is an amazing video by the Quarkus Core team that explains the library in a better way. You can watch it <a href="https://www.youtube.com/watch?v=iZ501bG2ZAE">here</a>. We will provide a simple implementation with Gizmo, but is it possible do more interesting things with this library, like <a href="https://pt.quarkus.io/blog/solving-problems-with-extensions/">removing a bytecode to solve a specific problem</a>.</p>
+<h3 id="creating-the-greetingservice">Creating the GreetingService</h3>
+<p>Into the <code>runtime</code> module, let's create our interface:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span>
+<span class="normal"><a href="#__codelineno-15-2">2</a></span>
+<span class="normal"><a href="#__codelineno-15-3">3</a></span>
+<span class="normal"><a href="#__codelineno-15-4">4</a></span>
+<span class="normal"><a href="#__codelineno-15-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.matheuscruz.quarkus.useful.runtime</span><span class="p">;</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">GreetingService</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="nf">message</span><span class="p">();</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="creating-the-implementation">Creating the implementation</h3>
+<p>Into the <code>deployment</code> module, let's create a new build step to generate our implementation.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span>
+<span class="normal"><a href="#__codelineno-16-2">2</a></span>
+<span class="normal"><a href="#__codelineno-16-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nd">@BuildStep</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">generateGreetingService</span><span class="p">(</span><span class="n">BuildProducer</span><span class="o">&lt;</span><span class="n">GeneratedBeanBuildItem</span><span class="o">&gt;</span><span class="w"> </span><span class="n">generatedClasses</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition info">
+<p class="admonition-title">@Record is not necessary</p>
+<p>The <code>@Record</code> annotation isn't always mandatory. Sometimes, annotating the method solely with <code>@BuildStep</code> suffices to include it in the augmentation process. However, if you have the <code>@Record</code> annotation you need to have a <code>@Recorder</code> class injected in the method.</p>
+</div>
+<p>There are two ways to generate a Build Item, the first one is returning the Build Item in method, and the second one is using the class <code>BuildProducer&lt;T extends BuildItem&gt;</code>.</p>
+<p>Let's continue with the implementation:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-17-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-17-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-17-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-17-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-17-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-17-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-17-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-17-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-17-10">10</a></span>
+<span class="normal"><a href="#__codelineno-17-11">11</a></span>
+<span class="normal"><a href="#__codelineno-17-12">12</a></span>
+<span class="normal"><a href="#__codelineno-17-13">13</a></span>
+<span class="normal"><a href="#__codelineno-17-14">14</a></span>
+<span class="normal"><a href="#__codelineno-17-15">15</a></span>
+<span class="normal"><a href="#__codelineno-17-16">16</a></span>
+<span class="normal"><a href="#__codelineno-17-17">17</a></span>
+<span class="normal"><a href="#__codelineno-17-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="nd">@BuildStep</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="hll"><span class="kt">void</span><span class="w"> </span><span class="nf">generateGreetingService</span><span class="p">(</span><span class="n">BuildProducer</span><span class="o">&lt;</span><span class="n">GeneratedBeanBuildItem</span><span class="o">&gt;</span><span class="w"> </span><span class="n">generatedClasses</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span></span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="hll"><span class="w">      </span><span class="n">GeneratedBeanGizmoAdaptor</span><span class="w"> </span><span class="n">gizmoAdapter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GeneratedBeanGizmoAdaptor</span><span class="p">(</span><span class="n">generatedClasses</span><span class="p">);</span>
+</span></span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">ClassCreator</span><span class="w"> </span><span class="n">classCreator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClassCreator</span><span class="p">.</span><span class="na">builder</span><span class="p">()</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">            </span><span class="p">.</span><span class="na">className</span><span class="p">(</span><span class="s">&quot;dev.matheuscruz.quarkus.useful.deployment.UsefulGreetingService&quot;</span><span class="p">)</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="hll"><span class="w">            </span><span class="p">.</span><span class="na">interfaces</span><span class="p">(</span><span class="n">GreetingService</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+</span></span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="w">            </span><span class="p">.</span><span class="na">classOutput</span><span class="p">(</span><span class="n">gizmoAdapter</span><span class="p">)</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w">            </span><span class="p">.</span><span class="na">build</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9"></a>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w">        </span><span class="n">classCreator</span><span class="p">.</span><span class="na">addAnnotation</span><span class="p">(</span><span class="n">ApplicationScoped</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11"></a>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">MethodCreator</span><span class="w"> </span><span class="n">returnHello</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">classCreator</span><span class="p">.</span><span class="na">getMethodCreator</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">,</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13"></a><span class="w">                </span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="w">            </span><span class="n">returnHello</span><span class="p">.</span><span class="na">setModifiers</span><span class="p">(</span><span class="n">Opcodes</span><span class="p">.</span><span class="na">ACC_PUBLIC</span><span class="p">);</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="w">            </span><span class="n">returnHello</span><span class="p">.</span><span class="na">returnValue</span><span class="p">(</span><span class="n">returnHello</span><span class="p">.</span><span class="na">load</span><span class="p">(</span><span class="s">&quot;Hello from Quarkus Useful extension&quot;</span><span class="p">));</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>What this build step does ind depth? Let's see:</p>
+<ol>
+<li>
+<p>The <code>GeneratedBeanBuildItem</code> is a build item having the bytecode that will be added as CDI bean (after in the augmentation process).</p>
+</li>
+<li>
+<p>The line <strong>"3"</strong>  is an adapter that uses the <code>BuildProducer&lt;GeneratedBeanBuildItem&gt;</code> injected into <code>generateGreetingService</code> method.</p>
+</li>
+<li>
+<p>The line <strong>"6"</strong> we are indicating that the new class will implements the <code>GreetingService</code> interface.</p>
+</li>
+<li>
+<p>In the line "<strong>10"</strong> we are adding the annotation <code>jakarta.ws.rs.ApplicationPath</code> to the new class.</p>
+</li>
+<li>
+<p>The <code>ClassCreator</code> is the class responsible for generating the bytecode, the instance of <code>GeneratedBeanGizmoAdaptor</code> is used as <code>ClassCreator.classOutput</code> property.</p>
+</li>
+<li>
+<p>When the method <code>ClassCreator#close()</code> is called the <code>ClassCreator</code> writes the bytecode inside de <code>GeneratedBeanGizmoAdaptor</code> instance. Note that we are using <code>try-with-resources</code>.</p>
+</li>
+<li>
+<p>Behind the scenes the <code>GeneratedBeanGizmoAdaptor</code> uses the <code>BuildProducer&lt;GeneratedBeanBuildItem&gt;</code> instance to produces the a <code>GeneratedBeanBuildItem</code> instance.</p>
+</li>
+</ol>
+<details class="info">
+<summary>See more: ClassCreator#close() implementation</summary>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span>
+<span class="normal"><a href="#__codelineno-18-2">2</a></span>
+<span class="normal"><a href="#__codelineno-18-3">3</a></span>
+<span class="normal"><a href="#__codelineno-18-4">4</a></span>
+<span class="normal"><a href="#__codelineno-18-5">5</a></span>
+<span class="normal"><a href="#__codelineno-18-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">close</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">ClassOutput</span><span class="w"> </span><span class="n">classOutput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">classOutput</span><span class="p">;</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">classOutput</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="w">        </span><span class="n">writeTo</span><span class="p">(</span><span class="n">classOutput</span><span class="p">);</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+</details>
+<details class="info">
+<summary>See more: GeneratedBeanGizmoAdaptor#write() implementation</summary>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-19-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-19-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-19-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-19-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-19-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-19-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-19-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-19-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-19-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-19-10">10</a></span>
+<span class="normal"><a href="#__codelineno-19-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="w">    </span><span class="nd">@Override</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">className</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sources</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="w">        </span><span class="n">StringWriter</span><span class="w"> </span><span class="n">sw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sources</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">className</span><span class="p">);</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sw</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="w">            </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sw</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10"></a><span class="w">    </span><span class="n">classOutput</span><span class="p">.</span><span class="na">produce</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">GeneratedBeanBuildItem</span><span class="p">(</span><span class="n">className</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="p">));</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+</details>
+<h3 id="using-our-hidden-greetingservice-implementation">Using our hidden GreetingService implementation</h3>
+<p>Now, that we have the default implementation, let's use our <code>integration-tests</code> module to test it.</p>
+<p>We need now to create a new resource called <code>GreetingResource</code>, to test our implementation:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-20-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-20-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-20-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-20-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-20-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-20-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-20-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-20-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-20-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-20-10">10</a></span>
+<span class="normal"><a href="#__codelineno-20-11">11</a></span>
+<span class="normal"><a href="#__codelineno-20-12">12</a></span>
+<span class="normal"><a href="#__codelineno-20-13">13</a></span>
+<span class="normal"><a href="#__codelineno-20-14">14</a></span>
+<span class="normal"><a href="#__codelineno-20-15">15</a></span>
+<span class="normal"><a href="#__codelineno-20-16">16</a></span>
+<span class="normal"><a href="#__codelineno-20-17">17</a></span>
+<span class="normal"><a href="#__codelineno-20-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.matheuscruz.quarkus.useful.it</span><span class="p">;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.matheuscruz.quarkus.useful.runtime.GreetingService</span><span class="p">;</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.inject.Inject</span><span class="p">;</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.ws.rs.GET</span><span class="p">;</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.ws.rs.Path</span><span class="p">;</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7"></a>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="nd">@Path</span><span class="p">(</span><span class="s">&quot;/greetings&quot;</span><span class="p">)</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">GreetingResource</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10"></a>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="w">    </span><span class="nd">@Inject</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12"></a><span class="w">    </span><span class="n">GreetingService</span><span class="w"> </span><span class="n">greetingService</span><span class="p">;</span>
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13"></a>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="w">    </span><span class="nd">@GET</span>
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">greeting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">greetingService</span><span class="p">.</span><span class="na">message</span><span class="p">();</span>
+</span><span id="__span-20-17"><a id="__codelineno-20-17" name="__codelineno-20-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-20-18"><a id="__codelineno-20-18" name="__codelineno-20-18"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Install the extension:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>install
+</span></code></pre></div>
+<p>Go to the <code>integration-tests</code> module directory (<code>cd integration-tests</code>) and execute:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>quarkus<span class="w"> </span>dev
+</span></code></pre></div>
+<p>Open the browser and access the <a href="http://localhost:8080/greetings">resource</a>.</p>
+<p>The output should shows: <code>Hello from Quarkus Useful extension</code>.</p>
+<h2 id="feature-3-counting-the-number-of-crud-methods">[Feature #3] Counting the number of CRUD methods</h2>
+<p>This feature helps us find and log methods annotated with <code>@POST</code>, <code>@GET</code>, <code>@PUT</code>, and <code>@DELETE</code> using Jandex. To log information at runtime, it's necessary to create a <code>Recorder</code> class within the <code>runtime</code> module.</p>
+<h3 id="jandex">Jandex</h3>
+<p>Jandex is a powerful Java annotation indexer and library that allows developers to efficiently analyze and index Java classes. It's particularly useful for Quarkus to perform annotation-based processing during build time. </p>
+<h3 id="consolerecorder">ConsoleRecorder</h3>
+<p>Just as we did with our notifier in the first feature, let's create the code that will be recorded to be executed at runtime.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-23-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-23-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-23-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-23-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-23-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-23-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-23-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-23-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-23-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-23-10">10</a></span>
+<span class="normal"><a href="#__codelineno-23-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="nd">@Recorder</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ConsoleRecorder</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3"></a>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="n">LOGGER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoggerFactory</span><span class="p">.</span><span class="na">getLogger</span><span class="p">(</span><span class="n">ConsoleRecorder</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5"></a>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">logs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">logs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8"></a><span class="w">            </span><span class="n">LOGGER</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="creating-the-deployment-code">Creating the deployment code</h3>
+<p>Quarkus offers two build items (<code>ApplicationIndexBuildItem</code>, <code>CombinedIndexBuildItem</code>) that enable us to obtain an index for accessing annotations, implementations, interfaces, and more. In the <code>ApplicationIndexBuildItem</code> we have all application classes and in the <code>CombinedIndexBuildItem</code> we have all the application classes and all relevant classes from dependencies, etc.</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-24-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-24-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-24-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-24-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-24-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-24-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-24-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-24-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-24-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-24-10">10</a></span>
+<span class="normal"><a href="#__codelineno-24-11">11</a></span>
+<span class="normal"><a href="#__codelineno-24-12">12</a></span>
+<span class="normal"><a href="#__codelineno-24-13">13</a></span>
+<span class="normal"><a href="#__codelineno-24-14">14</a></span>
+<span class="normal"><a href="#__codelineno-24-15">15</a></span>
+<span class="normal"><a href="#__codelineno-24-16">16</a></span>
+<span class="normal"><a href="#__codelineno-24-17">17</a></span>
+<span class="normal"><a href="#__codelineno-24-18">18</a></span>
+<span class="normal"><a href="#__codelineno-24-19">19</a></span>
+<span class="normal"><a href="#__codelineno-24-20">20</a></span>
+<span class="normal"><a href="#__codelineno-24-21">21</a></span>
+<span class="normal"><a href="#__codelineno-24-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="hll"><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DotName</span><span class="w"> </span><span class="n">POST_DOT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DotName</span><span class="p">.</span><span class="na">createSimple</span><span class="p">(</span><span class="s">&quot;jakarta.ws.rs.POST&quot;</span><span class="p">);</span>
+</span></span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="hll"><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DotName</span><span class="w"> </span><span class="n">GET_DOT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DotName</span><span class="p">.</span><span class="na">createSimple</span><span class="p">(</span><span class="s">&quot;jakarta.ws.rs.GET&quot;</span><span class="p">);</span>
+</span></span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="hll"><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DotName</span><span class="w"> </span><span class="n">PUT_DOT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DotName</span><span class="p">.</span><span class="na">createSimple</span><span class="p">(</span><span class="s">&quot;jakarta.ws.rs.PUT&quot;</span><span class="p">);</span>
+</span></span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="hll"><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">DotName</span><span class="w"> </span><span class="n">DELETE_DOT_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DotName</span><span class="p">.</span><span class="na">createSimple</span><span class="p">(</span><span class="s">&quot;jakarta.ws.rs.DELETE&quot;</span><span class="p">);</span>
+</span></span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5"></a>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6"></a><span class="nd">@BuildStep</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="hll"><span class="nd">@Record</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExecutionTime</span><span class="p">.</span><span class="na">STATIC_INIT</span><span class="p">)</span>
+</span></span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="hll"><span class="kt">void</span><span class="w"> </span><span class="nf">countJaxRs</span><span class="p">(</span><span class="n">ApplicationIndexBuildItem</span><span class="w"> </span><span class="n">jandex</span><span class="p">,</span><span class="w"> </span><span class="n">ConsoleRecorder</span><span class="w"> </span><span class="n">consoleRecorder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span></span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="w">    </span><span class="n">Index</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jandex</span><span class="p">.</span><span class="na">getIndex</span><span class="p">();</span><span class="w">        </span>
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10"></a><span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">logs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">List</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">POST_DOT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">GET_DOT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">PUT_DOT_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">DELETE_DOT_NAME</span><span class="p">)</span>
+</span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11"></a><span class="w">            </span><span class="p">.</span><span class="na">stream</span><span class="p">()</span>
+</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12"></a><span class="w">            </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">dotName</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-24-13"><a id="__codelineno-24-13" name="__codelineno-24-13"></a><span class="hll"><span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index</span><span class="p">.</span><span class="na">getAnnotations</span><span class="p">(</span><span class="n">dotName</span><span class="p">).</span><span class="na">size</span><span class="p">();</span>
+</span></span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14"></a><span class="w">                </span><span class="n">LOGGER</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;This is called during build time&quot;</span><span class="p">);</span>
+</span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15"></a><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">String</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&quot;Your application has %d method(s) annotated with %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span>
+</span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16"></a><span class="w">                        </span><span class="n">dotName</span><span class="p">.</span><span class="na">toString</span><span class="p">());</span>
+</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17"></a><span class="w">            </span><span class="p">})</span>
+</span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18"></a><span class="w">            </span><span class="p">.</span><span class="na">collect</span><span class="p">(</span><span class="n">Collectors</span><span class="p">.</span><span class="na">toList</span><span class="p">());</span>
+</span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19"></a>
+</span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20"></a><span class="w">    </span><span class="c1">// The following code is recorded to be runned at runtime.</span>
+</span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21"></a><span class="hll"><span class="w">    </span><span class="n">consoleRecorder</span><span class="p">.</span><span class="na">log</span><span class="p">(</span><span class="n">logs</span><span class="p">);</span>
+</span></span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<ul>
+<li>In lines <strong>"1-4"</strong>, DotName instances are defined to represent JaxRS annotations within our codebase.</li>
+<li>At line <strong>"7"</strong>, we specify that the recorded code will be executed within the static block.</li>
+<li>At line <strong>"8"</strong>, Quarkus injects the <code>ApplicationIndexBuildItem</code> build item into our build step.</li>
+<li>On line <strong>"13"</strong>, we utilize the Jandex index to discover all annotations within the application.</li>
+<li>On line <strong>"21"</strong>, a List<String> of messages is passed to our Recorder class method for use.</li>
+</ul>
+<h3 id="testing-our-extension-feature">Testing our extension feature</h3>
+<p>Let's add a new method inside the <code>QuarkusUsefulResource</code>:</p>
+<div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-25-1">1</a></span>
+<span class="normal"><a href="#__codelineno-25-2">2</a></span>
+<span class="normal"><a href="#__codelineno-25-3">3</a></span>
+<span class="normal"><a href="#__codelineno-25-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="nd">@POST</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">log</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;log was called&quot;</span><span class="p">;</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Now, we have two methods annotated with <code>@GET</code> annotation, and one annotatated with <code>@POST</code> annotation.</p>
+<p>Let's build the extension:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>install
+</span></code></pre></div>
+<p>Go to the <code>integration-tests</code>:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="nb">cd</span><span class="w"> </span>integration-tests
+</span></code></pre></div>
+<p>Execute the application:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>quarkus<span class="w"> </span>dev
+</span></code></pre></div>
+<p>The log should looks like it:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:08:28,985<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>dev.mat.qua.use.run.ConsoleRecorder<span class="o">]</span><span class="w"> </span><span class="o">(</span>Quarkus<span class="w"> </span>Main<span class="w"> </span>Thread<span class="o">)</span><span class="w"> </span>Your<span class="w"> </span>application<span class="w"> </span>has<span class="w"> </span><span class="m">1</span><span class="w"> </span>method<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>annotated<span class="w"> </span>with<span class="w"> </span>jakarta.ws.rs.POST
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:08:28,985<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>dev.mat.qua.use.run.ConsoleRecorder<span class="o">]</span><span class="w"> </span><span class="o">(</span>Quarkus<span class="w"> </span>Main<span class="w"> </span>Thread<span class="o">)</span><span class="w"> </span>Your<span class="w"> </span>application<span class="w"> </span>has<span class="w"> </span><span class="m">2</span><span class="w"> </span>method<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>annotated<span class="w"> </span>with<span class="w"> </span>jakarta.ws.rs.GET
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:08:28,985<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>dev.mat.qua.use.run.ConsoleRecorder<span class="o">]</span><span class="w"> </span><span class="o">(</span>Quarkus<span class="w"> </span>Main<span class="w"> </span>Thread<span class="o">)</span><span class="w"> </span>Your<span class="w"> </span>application<span class="w"> </span>has<span class="w"> </span><span class="m">0</span><span class="w"> </span>method<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>annotated<span class="w"> </span>with<span class="w"> </span>jakarta.ws.rs.PUT
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="m">2024</span>-01-12<span class="w"> </span><span class="m">20</span>:08:28,985<span class="w"> </span>INFO<span class="w">  </span><span class="o">[</span>dev.mat.qua.use.run.ConsoleRecorder<span class="o">]</span><span class="w"> </span><span class="o">(</span>Quarkus<span class="w"> </span>Main<span class="w"> </span>Thread<span class="o">)</span><span class="w"> </span>Your<span class="w"> </span>application<span class="w"> </span>has<span class="w"> </span><span class="m">0</span><span class="w"> </span>method<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>annotated<span class="w"> </span>with<span class="w"> </span>jakarta.ws.rs.DELETE
+</span></code></pre></div>
+<h3 id="references-and-resources">References and resources</h3>
+<p>This provides a concise overview of the Quarkus extension. For in-depth information, refer to the comprehensive official resources dedicated to this subject:</p>
+<ul>
+<li><a href="https://www.manning.com/books/quarkus-in-action">Quarkus in Action</a></li>
+<li><a href="https://quarkus.io/guides/writing-extensions">Writing Extensions</a></li>
+<li><a href="https://quarkus.io/guides/building-my-first-extension">Building My First Extension</a></li>
+<li><a href="https://quarkus.io/guides/writing-native-applications-tips">Writing Native Applications Tips</a></li>
+<li><a href="https://www.youtube.com/watch?v=RZbLwBuKxuw">Quarkus Insights #43: Writing Quarkus Extensions - Peter Palaga</a></li>
+<li><a href="https://www.youtube.com/watch?v=NL6gXDbIy18">Why you're missing out if you're not making Quarkus extensions by Holly Cummins Georgios Andrianakis</a></li>
+<li><a href="https://www.youtube.com/watch?v=iZ501bG2ZAE">Quarkus Insights #52: Gizmo: Build-time Boost Your Extensions - Martin Kouba</a></li>
+</ul>
+<h2 id="source-code">Source code</h2>
+<p>If you'd like to view the entire code, you can access it <a href="https://github.com/mcruzdev/quarkus-useful">here</a>.</p>
+<h2 id="thank-you">Thank you</h2>
+<p>That's all; thank you for reading! See you in the next post. Goodbye! <img alt="👋" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f44b.svg" title=":wave:" /></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+  
+
+
+
+  <h2 id="__comments">Comments</h2>
+  <script src="https://giscus.app/client.js"
+  data-repo="mcruzdev/blog"
+  data-repo-id="R_kgDOK-tZAA"
+  data-category="Q&A"
+  data-category-id="DIC_kwDOK-tZAM4CcnMK"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="dark"
+  data-lang="en"
+  crossorigin="anonymous"
+  async>
+</script>
+  <!-- Synchronize Giscus theme with palette -->
+  <script>
+    var giscus = document.querySelector("script[src*=giscus]")
+
+    // Set palette on initial load
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object") {
+      var theme = palette.color.scheme === "slate"
+        ? "transparent_dark"
+        : "light"
+
+      // Instruct Giscus to set theme
+      giscus.setAttribute("data-theme", theme) 
+    }
+
+    // Register event handlers after documented loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      var ref = document.querySelector("[data-md-component=palette]")
+      ref.addEventListener("change", function() {
+        var palette = __md_get("__palette")
+        if (palette && typeof palette.color === "object") {
+          var theme = palette.color.scheme === "slate"
+            ? "transparent_dark"
+            : "light"
+
+          // Instruct Giscus to change theme
+          var frame = document.querySelector(".giscus-frame")
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            "https://giscus.app"
+          )
+        }
+      })
+    })
+  </script>
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2024 <a href="https://github.com/mcruzdev"  target="_blank" rel="noopener">Matheus Cruz</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/mcruzdev" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/mcruzdev1" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://linkedin.com/in/mcruzdev1" target="_blank" rel="noopener" title="linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.annotate", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
