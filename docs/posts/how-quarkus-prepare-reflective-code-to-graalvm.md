@@ -1,7 +1,7 @@
 ---
 comments: true
 title: How Quarkus prepare reflective code to GraalVM
-draft: false 
+draft: true 
 date: 2024-02-14
 authors:
   - mcruzdev
